@@ -1,0 +1,18 @@
+
+services:
+  db-auth:
+    image: postgres:16.1
+    container_name: db-auth
+    volumes:
+      - auth-volume:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: auth
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 1234
+    ports:
+      - 5433:5432
+
+volumes:
+  auth-volume:
+    external: false
+
