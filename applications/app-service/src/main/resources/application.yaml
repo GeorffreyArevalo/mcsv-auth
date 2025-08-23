@@ -1,16 +1,41 @@
-##Spring Configuration
 server:
   port: 8080
 spring:
   application:
-    name: auth
+    name: "auth"
   devtools:
     add-properties: false
   profiles:
     include: null
 
   r2dbc:
-    url: r2dbc:postgresql://localhost:5433/auth?allowPublicKeyRetrieval=true&useSSL=false
-    username: admin
+    url: "r2dbc:postgresql://localhost:5433/auth?allowPublicKeyRetrieval=true&useSSL=false"
+    username: "admin"
     password: 1234
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,prometheus"
+  endpoint:
+    health:
+      probes:
+        enabled: true
+cors:
+  allowed-origins: "http://localhost:4200,http://localhost:8080"
+
+routes:
+  paths:
+    users: "/api/v1/users"
+    usersById: "/api/v1/users/{id}"
+
+adapters:
+  r2dbc:
+    host: "localhost"
+    port: 5433
+    database: "auth"
+    schema: "public"
+    username: "admin"
+    password: "1234"
 

@@ -1,4 +1,4 @@
-package co.com.crediya.dtos.user;
+package co.com.crediya.api.dtos.user;
 
 import java.math.BigDecimal;
 

@@ -14,7 +14,8 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Builder
 @Data
-public class UserEntity {
+public class
+UserEntity {
 
     @Id
     private Long id;
