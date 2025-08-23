@@ -1,4 +1,4 @@
-package co.com.crediya.model.user.enums;
+package co.com.crediya.enums;
 
 public enum ExceptionStatusCode {
 

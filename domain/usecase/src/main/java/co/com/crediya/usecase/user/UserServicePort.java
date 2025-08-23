@@ -5,6 +5,6 @@ import reactor.core.publisher.Mono;
 
 public interface UserServicePort {
 
-    Mono<Void> saveUser(User user);
+    Mono<User> saveUser(User user);
 
 }

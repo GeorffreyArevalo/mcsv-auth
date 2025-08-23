@@ -1,6 +1,6 @@
-package co.com.crediya.model.user.exceptions;
+package co.com.crediya.exceptions;
 
-import co.com.crediya.model.user.enums.ExceptionStatusCode;
+import co.com.crediya.enums.ExceptionStatusCode;
 
 public class CrediyaBadRequestException extends CrediyaException {
 

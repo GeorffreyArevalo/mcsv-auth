@@ -1,8 +1,8 @@
 package co.com.crediya.usecase.user;
 
 import co.com.crediya.model.user.User;
-import co.com.crediya.model.user.enums.ExceptionMessages;
-import co.com.crediya.model.user.exceptions.CrediyaIllegalArgumentException;
+import co.com.crediya.enums.ExceptionMessages;
+import co.com.crediya.exceptions.CrediyaIllegalArgumentException;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
