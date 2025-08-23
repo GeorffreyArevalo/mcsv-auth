@@ -27,7 +27,7 @@ public class UserValidator {
             throw new CrediyaIllegalArgumentException(ExceptionMessages.FIELD_EMAIL_NOT_VALID.getMessage());
         }
 
-        if( user.getBasePayment() == null || user.getBasePayment().compareTo(MIN_VALUE_BASE_PAYMENT) < 0 || user.getBasePayment().compareTo(MAX_VALUE_BASE_PAYMENT) > 0 ) {
+        if( user.getBasePayment() == null || user.getBasePayment().compareTo(MIN_VALUE_BASE_PAYMENT) <= 0 || user.getBasePayment().compareTo(MAX_VALUE_BASE_PAYMENT) > 0 ) {
             throw  new CrediyaIllegalArgumentException(ExceptionMessages.PAYMENT_OUT_RANGE.getMessage());
         }
 
