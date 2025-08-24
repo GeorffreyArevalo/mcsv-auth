@@ -31,8 +31,8 @@ class UserRepositoryAdapterTest {
 
     private User user;
 
-    private UserEntity userEntity1;
-    private UserEntity userEntity2;
+    private UserEntity userEntityOne;
+    private UserEntity userEntityTwo;
 
     @BeforeEach
     void setUp() {
@@ -45,7 +45,7 @@ class UserRepositoryAdapterTest {
                 .basePayment( new BigDecimal(10) )
                 .build();
 
-        userEntity1 = UserEntity.builder()
+        userEntityOne = UserEntity.builder()
                 .id(1L)
                 .name("John")
                 .lastName("Doe")
@@ -55,7 +55,7 @@ class UserRepositoryAdapterTest {
                 .basePayment( new BigDecimal(10) )
                 .build();
 
-        userEntity2 = UserEntity.builder()
+        userEntityTwo = UserEntity.builder()
                 .id(1L)
                 .name("Juana")
                 .lastName("Mercedes")
@@ -70,12 +70,12 @@ class UserRepositoryAdapterTest {
     @Test
     void mustFindValueById() {
 
-        when(repository.findById( userEntity1.getId() ))
-                .thenReturn( Mono.just(userEntity1) );
+        when(repository.findById( userEntityOne.getId() ))
+                .thenReturn( Mono.just(userEntityOne) );
 
-        when(mapper.map(userEntity1, User.class)).thenReturn(user);
+        when(mapper.map(userEntityOne, User.class)).thenReturn(user);
 
-        Mono<User> result = repositoryAdapter.findById(userEntity1.getId());
+        Mono<User> result = repositoryAdapter.findById(userEntityOne.getId());
 
         StepVerifier.create(result)
                 .expectNextMatches( userFound -> userFound.getName().equals(user.getName()) )
@@ -85,12 +85,12 @@ class UserRepositoryAdapterTest {
     @Test
     void mustFindValueByEmail() {
 
-        when(repository.findByEmail( userEntity1.getEmail() ))
-                .thenReturn( Mono.just(userEntity1) );
+        when(repository.findByEmail( userEntityOne.getEmail() ))
+                .thenReturn( Mono.just(userEntityOne) );
 
-        when(mapper.map(userEntity1, User.class)).thenReturn(user);
+        when(mapper.map(userEntityOne, User.class)).thenReturn(user);
 
-        Mono<User> result = repositoryAdapter.findByEmail(userEntity1.getEmail());
+        Mono<User> result = repositoryAdapter.findByEmail(userEntityOne.getEmail());
 
         StepVerifier.create(result)
                 .expectNextMatches( userFound -> userFound.getEmail().equals(user.getEmail()) )
@@ -98,12 +98,27 @@ class UserRepositoryAdapterTest {
     }
 
     @Test
+    void mustFindValueByDocument() {
+
+        when(repository.findByDocument( userEntityOne.getDocument() ))
+                .thenReturn( Mono.just(userEntityOne) );
+
+        when(mapper.map(userEntityOne, User.class)).thenReturn(user);
+
+        Mono<User> result = repositoryAdapter.findByDocument(userEntityOne.getDocument());
+
+        StepVerifier.create(result)
+                .expectNextMatches( userFound -> userFound.getDocument().equals(user.getDocument()) )
+                .verifyComplete();
+    }
+
+    @Test
     void mustFindAllValues() {
 
-        when(repository.findAll()).thenReturn(Flux.just( userEntity1, userEntity2 ) );
+        when(repository.findAll()).thenReturn(Flux.just( userEntityOne, userEntityTwo ) );
 
-        when(mapper.map(userEntity1, User.class)).thenReturn(user);
-        when(mapper.map(userEntity2, User.class)).thenReturn(user);
+        when(mapper.map(userEntityOne, User.class)).thenReturn(user);
+        when(mapper.map(userEntityTwo, User.class)).thenReturn(user);
 
         Flux<User> result = repositoryAdapter.findAll();
 
@@ -114,9 +129,9 @@ class UserRepositoryAdapterTest {
 
     @Test
     void mustSaveValue() {
-        when(repository.save(userEntity1)).thenReturn(Mono.just(userEntity1));
-        when(mapper.map(userEntity1, User.class)).thenReturn(user);
-        when(mapper.map(user, UserEntity.class)).thenReturn(userEntity1);
+        when(repository.save(userEntityOne)).thenReturn(Mono.just(userEntityOne));
+        when(mapper.map(userEntityOne, User.class)).thenReturn(user);
+        when(mapper.map(user, UserEntity.class)).thenReturn(userEntityOne);
 
         Mono<User> result = repositoryAdapter.save(user);
 
