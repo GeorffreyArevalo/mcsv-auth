@@ -4,6 +4,7 @@ import co.com.crediya.api.dtos.user.CreateUserRequest;
 import co.com.crediya.api.mappers.UserMapper;
 import co.com.crediya.usecase.user.UserServicePort;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.reactive.TransactionalOperator;
@@ -14,6 +15,7 @@ import java.net.URI;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class UserHandler {
 
     private final UserServicePort userServicePort;
@@ -21,7 +23,7 @@ public class UserHandler {
     private final TransactionalOperator transactionalOperator;
 
     public Mono<ServerResponse> listenSaveUser(ServerRequest serverRequest) {
-
+        log.info("Saving user");
         return serverRequest.bodyToMono(CreateUserRequest.class)
                 .map( userMapper::createRequestToModel )
                 .flatMap( userServicePort::saveUser )

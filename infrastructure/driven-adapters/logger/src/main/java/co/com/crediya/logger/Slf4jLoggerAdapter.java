@@ -20,4 +20,16 @@ public class Slf4jLoggerAdapter implements CrediyaLoggerPort {
     public void info(String message, Object... objects) {
         logger.info(message, objects);
     }
+
+    @Override
+    public void warn(String message) {
+        logger.warn(message);
+    }
+
+    @Override
+    public void warn(String message, Object... objects) {
+        logger.warn(message, objects);
+    }
+
+
 }
