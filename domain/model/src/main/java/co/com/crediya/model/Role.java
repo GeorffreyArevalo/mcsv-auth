@@ -1,4 +1,4 @@
-package co.com.crediya.model.role;
+package co.com.crediya.model;
 import lombok.Builder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

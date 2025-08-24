@@ -1,9 +1,10 @@
 package co.com.crediya.usecase.user;
 
-import co.com.crediya.model.user.User;
+import co.com.crediya.exceptions.CrediyaIllegalArgumentException;
+import co.com.crediya.model.User;
 import co.com.crediya.enums.ExceptionMessages;
 import co.com.crediya.exceptions.CrediyaBadRequestException;
-import co.com.crediya.model.user.gateways.UserRepositoryPort;
+import co.com.crediya.model.gateways.UserRepositoryPort;
 import co.com.crediya.ports.CrediyaLoggerPort;
 import reactor.core.publisher.Mono;
 
@@ -32,5 +33,6 @@ public class UserUseCase implements UserServicePort {
                 ).
                 switchIfEmpty( UserValidator.validateSaveUser(user) )
                 .flatMap( validUser -> userRepository.save(user) );
+
     }
 }

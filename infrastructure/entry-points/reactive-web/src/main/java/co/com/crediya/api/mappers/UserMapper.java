@@ -2,7 +2,7 @@ package co.com.crediya.api.mappers;
 
 import co.com.crediya.api.dtos.user.CreateUserRequest;
 import co.com.crediya.api.dtos.user.UserResponse;
-import co.com.crediya.model.user.User;
+import co.com.crediya.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 

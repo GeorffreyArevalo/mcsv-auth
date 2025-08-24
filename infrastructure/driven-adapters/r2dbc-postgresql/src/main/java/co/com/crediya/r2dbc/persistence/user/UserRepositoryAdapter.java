@@ -1,7 +1,7 @@
 package co.com.crediya.r2dbc.persistence.user;
 
-import co.com.crediya.model.user.User;
-import co.com.crediya.model.user.gateways.UserRepositoryPort;
+import co.com.crediya.model.User;
+import co.com.crediya.model.gateways.UserRepositoryPort;
 import co.com.crediya.r2dbc.entities.UserEntity;
 import co.com.crediya.r2dbc.helper.ReactiveAdapterOperations;
 import org.reactivecommons.utils.ObjectMapper;

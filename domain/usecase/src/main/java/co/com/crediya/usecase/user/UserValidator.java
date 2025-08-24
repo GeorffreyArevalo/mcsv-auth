@@ -1,9 +1,8 @@
 package co.com.crediya.usecase.user;
 
-import co.com.crediya.model.user.User;
+import co.com.crediya.model.User;
 import co.com.crediya.enums.ExceptionMessages;
 import co.com.crediya.exceptions.CrediyaIllegalArgumentException;
-import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
@@ -17,19 +16,19 @@ public class UserValidator {
     public static Mono<User> validateSaveUser(User user) {
 
         if( user.getName() == null || user.getName().isBlank() ) {
-            throw new CrediyaIllegalArgumentException(ExceptionMessages.FIELD_NAME_REQUIRED.getMessage());
+            return Mono.error(new CrediyaIllegalArgumentException(ExceptionMessages.FIELD_NAME_REQUIRED.getMessage()));
         }
 
         if( user.getLastName() == null || user.getLastName().isBlank() ) {
-            throw new CrediyaIllegalArgumentException(ExceptionMessages.FIELD_LAST_NAME_REQUIRED.getMessage());
+            return Mono.error(new CrediyaIllegalArgumentException(ExceptionMessages.FIELD_LAST_NAME_REQUIRED.getMessage()));
         }
 
         if( user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().matches(REGEX_VALID_EMAIL) ) {
-            throw new CrediyaIllegalArgumentException(ExceptionMessages.FIELD_EMAIL_NOT_VALID.getMessage());
+            return Mono.error(new CrediyaIllegalArgumentException(ExceptionMessages.FIELD_EMAIL_NOT_VALID.getMessage()));
         }
 
         if( user.getBasePayment() == null || user.getBasePayment().compareTo(MIN_VALUE_BASE_PAYMENT) <= 0 || user.getBasePayment().compareTo(MAX_VALUE_BASE_PAYMENT) > 0 ) {
-            throw  new CrediyaIllegalArgumentException(ExceptionMessages.PAYMENT_OUT_RANGE.getMessage());
+            return Mono.error(new CrediyaIllegalArgumentException(ExceptionMessages.PAYMENT_OUT_RANGE.getMessage()));
         }
 
         return Mono.just(user);

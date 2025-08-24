@@ -1,6 +1,6 @@
-package co.com.crediya.model.user.gateways;
+package co.com.crediya.model.gateways;
 
-import co.com.crediya.model.user.User;
+import co.com.crediya.model.User;
 import reactor.core.publisher.Mono;
 
 public interface UserRepositoryPort {
