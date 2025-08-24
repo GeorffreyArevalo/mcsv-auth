@@ -9,8 +9,8 @@ spring:
     include: null
 
   r2dbc:
-    url: "r2dbc:postgresql://localhost:5433/auth?allowPublicKeyRetrieval=true&useSSL=false"
-    username: "admin"
+    url: "r2dbc:mysql://localhost:3306/auth?allowPublicKeyRetrieval=true&useSSL=false"
+    username: "user"
     password: 1234
 
 management:
@@ -29,15 +29,6 @@ routes:
   paths:
     users: "/api/v1/users"
     usersById: "/api/v1/users/{id}"
-
-adapters:
-  r2dbc:
-    host: "localhost"
-    port: 5433
-    database: "auth"
-    schema: "public"
-    username: "admin"
-    password: "1234"
 
 
 springdoc:

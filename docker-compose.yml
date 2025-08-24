@@ -12,7 +12,22 @@ services:
     ports:
       - 5433:5432
 
+  mysql-db-auth:
+    container_name: db-mysql-auth
+    image: mysql:8.0.32
+    ports:
+      - 3306:3306
+    volumes:
+      - my-sql-volume:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=pwduser
+      - MYSQL_DATABASE=auth
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=1234
+
 volumes:
   auth-volume:
+    external: false
+  my-sql-volume:
     external: false
 
