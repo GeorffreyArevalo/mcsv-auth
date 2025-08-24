@@ -1,17 +1,5 @@
 
 services:
-  db-auth:
-    image: postgres:16.1
-    container_name: db-auth
-    volumes:
-      - auth-volume:/var/lib/postgresql/data
-    environment:
-      POSTGRES_DB: auth
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: 1234
-    ports:
-      - 5433:5432
-
   mysql-db-auth:
     container_name: db-mysql-auth
     image: mysql:8.0.32
@@ -26,8 +14,6 @@ services:
       - MYSQL_PASSWORD=1234
 
 volumes:
-  auth-volume:
-    external: false
   my-sql-volume:
     external: false
 
