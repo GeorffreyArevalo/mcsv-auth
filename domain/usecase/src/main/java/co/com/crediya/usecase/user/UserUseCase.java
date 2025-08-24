@@ -4,22 +4,28 @@ import co.com.crediya.model.user.User;
 import co.com.crediya.enums.ExceptionMessages;
 import co.com.crediya.exceptions.CrediyaBadRequestException;
 import co.com.crediya.model.user.gateways.UserRepositoryPort;
+import co.com.crediya.ports.CrediyaLoggerPort;
 import reactor.core.publisher.Mono;
 
 public class UserUseCase implements UserServicePort {
 
     private final UserRepositoryPort userRepository;
+    private final CrediyaLoggerPort logger;
 
-    public UserUseCase(UserRepositoryPort userRepository) {
+    public UserUseCase(
+            UserRepositoryPort userRepository,
+            CrediyaLoggerPort logger
+    ) {
         this.userRepository = userRepository;
+        this.logger = logger;
     }
 
     @Override
     public Mono<User> saveUser(User user) {
+        logger.info("Saving user {}", user);
 
         return userRepository.findByEmail(user.getEmail())
                 .flatMap( savedUser ->
-
                         Mono.error( new CrediyaBadRequestException(
                                 String.format(ExceptionMessages.USER_WITH_EMAIL_EXIST.getMessage(),  user.getEmail())
                         ))

@@ -3,6 +3,7 @@ package co.com.crediya.usecase.user;
 import co.com.crediya.model.user.User;
 import co.com.crediya.enums.ExceptionMessages;
 import co.com.crediya.exceptions.CrediyaIllegalArgumentException;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;

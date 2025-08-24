@@ -70,4 +70,16 @@ public class User {
     public void setBasePayment(BigDecimal basePayment) {
         this.basePayment = basePayment;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "name='" + name + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", document='" + document + '\'' +
+                ", phone='" + phone + '\'' +
+                ", basePayment=" + basePayment +
+                '}';
+    }
 }
