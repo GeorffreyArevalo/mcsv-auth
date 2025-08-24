@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Table("users")
 @AllArgsConstructor
@@ -24,6 +25,7 @@ UserEntity {
     private String email;
     private String document;
     private String phone;
+    private LocalDate dateOfBirth;
     private BigDecimal basePayment;
 
 }

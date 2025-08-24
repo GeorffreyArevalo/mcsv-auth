@@ -19,13 +19,24 @@ public class UserUseCase implements UserServicePort {
         logger.info("Saving user {}", user);
 
         return userRepository.findByEmail(user.getEmail())
-                .flatMap( savedUser ->
+                .flatMap( existingUser ->
                         Mono.error( new CrediyaBadRequestException(
                                 String.format(ExceptionMessages.USER_WITH_EMAIL_EXIST.getMessage(),  user.getEmail())
                         ))
+                ).switchIfEmpty(
+                        userRepository.findByDocument(user.getDocument())
+                                .flatMap( existingUser ->
+                                    Mono.error( new CrediyaBadRequestException(
+                                            String.format(ExceptionMessages.USER_WITH_DOCUMENT_EXIST.getMessage(),  existingUser.getDocument())
+                                    ))
+                                )
                 )
-                .switchIfEmpty( UserValidator.validateSaveUser(user) )
-                .flatMap( validUser -> userRepository.save(user) );
+                .switchIfEmpty(
+                        UserValidator.validateSaveUser(user)
+                )
+                .flatMap(
+                        validUser -> userRepository.save(user)
+                );
 
     }
 }
