@@ -1,0 +1,11 @@
+
+spring:
+  r2dbc:
+    url: "r2dbc:mysql://localhost:3306/auth?allowPublicKeyRetrieval=true&useSSL=false"
+    username: "user"
+    password: 1234
+
+routes:
+  paths:
+    users: "/api/v1/users"
+    usersById: "/api/v1/users/{id}"
