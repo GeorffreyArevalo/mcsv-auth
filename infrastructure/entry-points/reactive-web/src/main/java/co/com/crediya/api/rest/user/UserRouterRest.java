@@ -1,9 +1,21 @@
 package co.com.crediya.api.rest.user;
 
 import co.com.crediya.api.config.PathsConfig;
+import co.com.crediya.api.dtos.user.CreateUserRequest;
+import co.com.crediya.api.dtos.user.UserResponse;
+import co.com.crediya.api.exception.model.CustomError;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.RouterOperation;
+import org.springdoc.core.annotations.RouterOperations;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
@@ -17,7 +29,53 @@ public class UserRouterRest {
     private final PathsConfig pathsConfig;
     private final UserHandler userHandler;
 
+
+
+
     @Bean
+    @RouterOperations({
+            @RouterOperation(
+                    produces = {
+                            MediaType.APPLICATION_JSON_VALUE,
+                    },
+                    method = RequestMethod.POST,
+                    beanClass = UserHandler.class,
+                    beanMethod = "listenSaveUser",
+                    operation = @Operation(
+                            tags = "Users",
+                            operationId = "saveUser",
+                            description = "Save a user",
+                            summary = "Save a user",
+                            requestBody = @RequestBody(
+                                    content = @Content(
+                                            schema = @Schema(
+                                                    implementation = CreateUserRequest.class
+                                            )
+                                    )
+                            ),
+                            responses = {
+                                    @ApiResponse(
+                                            responseCode = "201",
+                                            description = "User saved successfully.",
+                                            content = @Content(
+                                                    schema = @Schema(
+                                                            implementation = UserResponse.class
+                                                    )
+                                            )
+                                    ),
+                                    @ApiResponse(
+                                            responseCode = "400",
+                                            description = "Request body is not valid.",
+                                            content = @Content(
+                                                    schema = @Schema(
+                                                            implementation = CustomError.class
+                                                    )
+                                            )
+                                    )
+                            }
+                    )
+            )
+    })
     public RouterFunction<ServerResponse> routerFunction(UserHandler handler) {
         return route(POST(pathsConfig.getUsers()), userHandler::listenSaveUser);
     }

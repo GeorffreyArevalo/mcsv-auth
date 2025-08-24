@@ -39,3 +39,13 @@ adapters:
     username: "admin"
     password: "1234"
 
+
+springdoc:
+  swagger-ui:
+    path: /openapi/swagger-ui.html
+  api-docs:
+    path: /openapi/v3/api-docs
+  packages-to-scan: co.com.crediya
+  paths-to-match: /**
+
+
