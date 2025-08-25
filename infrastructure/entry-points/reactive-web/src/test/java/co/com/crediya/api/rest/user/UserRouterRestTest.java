@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import  static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @ContextConfiguration(classes = {UserRouterRest.class, UserHandler.class})
 @EnableConfigurationProperties(PathsConfig.class)
@@ -59,6 +60,7 @@ class UserRouterRestTest {
                 "arevalo@gmail.com",
                 "10900122",
                 "210012312",
+                LocalDate.now(),
                 BigDecimal.TEN
         );
 
@@ -79,7 +81,7 @@ class UserRouterRestTest {
     }
 
     @Test
-    void testListeSaveUser() {
+    void testListenSaveUser() {
 
         when( userUseCase.saveUser(user) ).thenReturn(Mono.just(user));
 

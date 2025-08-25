@@ -7,4 +7,6 @@ public interface UserServicePort {
 
     Mono<User> saveUser(User user);
 
+    Mono<User> findUserByDocument( String document );
+
 }

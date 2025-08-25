@@ -29,6 +29,7 @@ routes:
   paths:
     users: "/api/v1/users"
     usersById: "/api/v1/users/{id}"
+    usersByDocument: "/api/v1/users/{document}"
 
 
 springdoc:

@@ -8,7 +8,8 @@ public enum ExceptionMessages {
     FIELD_PAYMENT_OUT_RANGE("Filed basePayment is out of range"),
     FIELD_DOCUMENT_MUST_BE_ONLY_NUMBERS("Document must be only numbers"),
     USER_WITH_EMAIL_EXIST("User with email %s already exists"),
-    USER_WITH_DOCUMENT_EXIST("User with document %s already exists");
+    USER_WITH_DOCUMENT_EXIST("User with document %s already exists"),
+    USER_WITH_DOCUMENT_NOT_EXIST("User with document %s doesn't exists");
 
     private final String message;
 

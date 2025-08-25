@@ -1,5 +1,6 @@
 package co.com.crediya.usecase.user;
 
+import co.com.crediya.exceptions.CrediyaResourceNotFoundException;
 import co.com.crediya.model.User;
 import co.com.crediya.enums.ExceptionMessages;
 import co.com.crediya.exceptions.CrediyaBadRequestException;
@@ -21,34 +22,29 @@ public class UserUseCase implements UserServicePort {
 
         return userRepository.findByEmail(user.getEmail())
                 .flatMap( existingUser -> {
-
                             logger.warn("User with email={} already exists", user.getEmail());
-
-                            return Mono.error( new CrediyaBadRequestException(
-                                    String.format(ExceptionMessages.USER_WITH_EMAIL_EXIST.getMessage(),  user.getEmail())
-                            ));
+                            return Mono.error( new CrediyaBadRequestException( String.format(ExceptionMessages.USER_WITH_EMAIL_EXIST.getMessage(),  user.getEmail()) ));
                         }
                 ).switchIfEmpty(
                         userRepository.findByDocument(user.getDocument())
                                 .flatMap( existingUser -> {
-
                                         logger.warn("User with document={} already exists", user.getDocument());
-
-                                        return Mono.error( new CrediyaBadRequestException(
-                                                String.format(ExceptionMessages.USER_WITH_DOCUMENT_EXIST.getMessage(),  existingUser.getDocument())
-                                        ));
+                                        return Mono.error( new CrediyaBadRequestException( String.format(ExceptionMessages.USER_WITH_DOCUMENT_EXIST.getMessage(),  existingUser.getDocument()) ));
                                     }
                                 )
                 )
-                .switchIfEmpty(
-                        UserValidator.validateSaveUser(user)
-                )
-                .flatMap(
-                        validUser -> userRepository.save(user)
-                                .doOnSuccess(
-                                        loggedUser -> logger.info("User saved successfully.")
-                                )
-                );
+                .switchIfEmpty( UserValidator.validateSaveUser(user) )
+                .flatMap( validUser -> userRepository.save(user)
+                                .doOnSuccess( loggedUser -> logger.info("User saved successfully.") ) );
 
+    }
+
+    @Override
+    public Mono<User> findUserByDocument(String document) {
+        logger.info("Finding user by document={}", document);
+        return userRepository.findByDocument(document)
+                .switchIfEmpty( Mono.error(new CrediyaResourceNotFoundException(
+                        String.format(ExceptionMessages.USER_WITH_DOCUMENT_NOT_EXIST.getMessage(),  document )
+                )) );
     }
 }

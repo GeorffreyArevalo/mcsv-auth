@@ -9,5 +9,6 @@ public class PathsConfig {
 
     private String users;
     private String usersById;
+    private String usersByDocument;
 
 }

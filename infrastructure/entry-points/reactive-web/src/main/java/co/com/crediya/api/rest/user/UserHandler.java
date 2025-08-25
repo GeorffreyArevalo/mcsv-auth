@@ -31,9 +31,20 @@ public class UserHandler {
                 .flatMap( savedUser ->
                             ServerResponse.created(URI.create(""))
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .bodyValue(savedUser)
-                        ).as(
-                                transactionalOperator::transactional
+                                    .bodyValue( savedUser )
+                ).as( transactionalOperator::transactional );
+
+    }
+
+    public Mono<ServerResponse> listenFindUserByDocument(ServerRequest serverRequest) {
+        log.info("Finding user by document");
+        String document  = serverRequest.pathVariable("document");
+
+        return userServicePort.findUserByDocument(document)
+                .flatMap( user ->
+                                ServerResponse.ok()
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .bodyValue( user )
                 );
 
     }
