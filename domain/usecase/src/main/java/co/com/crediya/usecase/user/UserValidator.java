@@ -1,7 +1,7 @@
 package co.com.crediya.usecase.user;
 
 import co.com.crediya.model.User;
-import co.com.crediya.enums.ExceptionMessages;
+import co.com.crediya.exceptions.enums.ExceptionMessages;
 import co.com.crediya.exceptions.CrediyaIllegalArgumentException;
 import reactor.core.publisher.Mono;
 
@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 
 public class UserValidator {
 
-    private static final BigDecimal MIN_VALUE_BASE_PAYMENT = new BigDecimal(0);
+    private static final BigDecimal MIN_VALUE_BASE_PAYMENT = BigDecimal.ZERO;
     private static final BigDecimal MAX_VALUE_BASE_PAYMENT = new BigDecimal(15000000);
     private static final String REGEX_VALID_EMAIL = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
     private static final String REGEX_ONLY_NUMBERS = "^\\d+$";

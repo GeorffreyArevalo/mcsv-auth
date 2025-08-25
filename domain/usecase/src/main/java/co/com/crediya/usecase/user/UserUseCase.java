@@ -2,7 +2,7 @@ package co.com.crediya.usecase.user;
 
 import co.com.crediya.exceptions.CrediyaResourceNotFoundException;
 import co.com.crediya.model.User;
-import co.com.crediya.enums.ExceptionMessages;
+import co.com.crediya.exceptions.enums.ExceptionMessages;
 import co.com.crediya.exceptions.CrediyaBadRequestException;
 import co.com.crediya.model.gateways.UserRepositoryPort;
 import co.com.crediya.ports.CrediyaLoggerPort;
@@ -17,9 +17,7 @@ public class UserUseCase implements UserServicePort {
 
     @Override
     public Mono<User> saveUser(User user) {
-
         logger.info("Saving user {}", user);
-
         return userRepository.findByEmail(user.getEmail())
                 .flatMap( existingUser -> {
                             logger.warn("User with email={} already exists", user.getEmail());
@@ -43,8 +41,11 @@ public class UserUseCase implements UserServicePort {
     public Mono<User> findUserByDocument(String document) {
         logger.info("Finding user by document={}", document);
         return userRepository.findByDocument(document)
-                .switchIfEmpty( Mono.error(new CrediyaResourceNotFoundException(
-                        String.format(ExceptionMessages.USER_WITH_DOCUMENT_NOT_EXIST.getMessage(),  document )
-                )) );
+                .switchIfEmpty( Mono.error(() -> {
+                        logger.warn("User not found by document={}", document);
+                        return new CrediyaResourceNotFoundException(
+                            String.format(ExceptionMessages.USER_WITH_DOCUMENT_NOT_EXIST.getMessage(),  document )
+                        );
+                }));
     }
 }

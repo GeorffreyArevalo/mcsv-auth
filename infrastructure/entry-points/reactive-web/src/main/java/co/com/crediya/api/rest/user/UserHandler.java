@@ -23,8 +23,9 @@ public class UserHandler {
     private final TransactionalOperator transactionalOperator;
 
     public Mono<ServerResponse> listenSaveUser(ServerRequest serverRequest) {
-        log.info("Saving user");
+
         return serverRequest.bodyToMono(CreateUserRequest.class)
+                .doOnNext( userRequest -> log.info("Saving user={}", userRequest))
                 .map( userMapper::createRequestToModel )
                 .flatMap( userServicePort::saveUser )
                 .map( userMapper::modelToResponse )

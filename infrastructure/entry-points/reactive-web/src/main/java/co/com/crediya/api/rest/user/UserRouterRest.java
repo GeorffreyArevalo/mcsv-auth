@@ -51,7 +51,7 @@ public class UserRouterRest {
                     )
             ),
             @RouterOperation(
-                    path = "/api/v1/users/{document}",
+                    path = "/api/v1/users/byDocument/{document}",
                     produces = {
                             MediaType.APPLICATION_JSON_VALUE,
                     },

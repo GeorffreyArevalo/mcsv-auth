@@ -1,4 +1,4 @@
-package co.com.crediya.enums;
+package co.com.crediya.exceptions.enums;
 
 public enum ExceptionMessages {
 
