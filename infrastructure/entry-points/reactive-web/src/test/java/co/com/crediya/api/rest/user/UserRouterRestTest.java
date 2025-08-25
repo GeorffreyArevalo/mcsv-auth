@@ -4,10 +4,12 @@ import co.com.crediya.api.config.PathsConfig;
 import co.com.crediya.api.config.UserTestConfiguration;
 import co.com.crediya.api.dtos.user.CreateUserRequest;
 import co.com.crediya.api.dtos.user.UserResponse;
+import co.com.crediya.exceptions.CrediyaResourceNotFoundException;
 import co.com.crediya.model.User;
 import co.com.crediya.usecase.user.UserUseCase;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -18,6 +20,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import  static org.mockito.Mockito.when;
@@ -33,6 +36,7 @@ class UserRouterRestTest {
 
     private static final String USERS_PATH = "/api/v1/users";
     private static final String USERS_PATH_ID = "/api/v1/users/{id}";
+    private static final String USERS_PATH_BY_DOCUMENT = "/api/v1/users/byDocument/{document}";
 
     @Autowired
     private WebTestClient webTestClient;
@@ -81,6 +85,7 @@ class UserRouterRestTest {
     }
 
     @Test
+    @DisplayName("Must save a user successfully")
     void testListenSaveUser() {
 
         when( userUseCase.saveUser(user) ).thenReturn(Mono.just(user));
@@ -95,5 +100,22 @@ class UserRouterRestTest {
                             Assertions.assertThat(userResponse).isNotNull();
                         }
                 );
+    }
+
+    @Test
+    @DisplayName("Must find user with document")
+    void testListenFindUserByDocument() {
+
+        when( userUseCase.findUserByDocument(user.getDocument()) ).thenReturn(Mono.just(user));
+
+        webTestClient.get()
+                .uri(USERS_PATH_BY_DOCUMENT, createUserRequest.document())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(UserResponse.class)
+                .value( userResponse -> {
+                    Assertions.assertThat( userResponse.document() ).isEqualTo( user.getDocument() );
+                } );
+
     }
 }

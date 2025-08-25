@@ -3,6 +3,7 @@ package co.com.crediya.r2dbc.persistence.user;
 import co.com.crediya.model.User;
 import co.com.crediya.r2dbc.entities.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -68,7 +69,8 @@ class UserRepositoryAdapterTest {
 
 
     @Test
-    void mustFindValueById() {
+    @DisplayName("Must find user by id")
+    void mustFindUserById() {
 
         when(repository.findById( userEntityOne.getId() ))
                 .thenReturn( Mono.just(userEntityOne) );
@@ -83,7 +85,8 @@ class UserRepositoryAdapterTest {
     }
 
     @Test
-    void mustFindValueByEmail() {
+    @DisplayName("Must find user by email")
+    void mustFindUserByEmail() {
 
         when(repository.findByEmail( userEntityOne.getEmail() ))
                 .thenReturn( Mono.just(userEntityOne) );
@@ -98,7 +101,8 @@ class UserRepositoryAdapterTest {
     }
 
     @Test
-    void mustFindValueByDocument() {
+    @DisplayName("Must find user by document")
+    void mustFindUserByDocument() {
 
         when(repository.findByDocument( userEntityOne.getDocument() ))
                 .thenReturn( Mono.just(userEntityOne) );
@@ -113,7 +117,8 @@ class UserRepositoryAdapterTest {
     }
 
     @Test
-    void mustFindAllValues() {
+    @DisplayName("Must find all users")
+    void mustFindAllUsers() {
 
         when(repository.findAll()).thenReturn(Flux.just( userEntityOne, userEntityTwo ) );
 
@@ -128,7 +133,8 @@ class UserRepositoryAdapterTest {
     }
 
     @Test
-    void mustSaveValue() {
+    @DisplayName("Must save user successfully")
+    void mustSaveUser() {
         when(repository.save(userEntityOne)).thenReturn(Mono.just(userEntityOne));
         when(mapper.map(userEntityOne, User.class)).thenReturn(user);
         when(mapper.map(user, UserEntity.class)).thenReturn(userEntityOne);

@@ -3,6 +3,7 @@ package co.com.crediya.usecase.user;
 
 import co.com.crediya.exceptions.CrediyaBadRequestException;
 import co.com.crediya.exceptions.CrediyaIllegalArgumentException;
+import co.com.crediya.exceptions.CrediyaResourceNotFoundException;
 import co.com.crediya.model.User;
 import co.com.crediya.model.gateways.UserRepositoryPort;
 import co.com.crediya.ports.CrediyaLoggerPort;
@@ -21,7 +22,7 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 
 @ExtendWith(MockitoExtension.class)
-public class UserUseCaseTest {
+class UserUseCaseTest {
 
     @Mock
     private UserRepositoryPort userRepository;
@@ -146,7 +147,27 @@ public class UserUseCaseTest {
 
     }
 
+    @Test
+    @DisplayName("Must find user by document")
+    void testFindUserByDocument() {
 
+        when( userRepository.findByDocument(user.getDocument()) ).thenReturn(Mono.just(user));
+
+        StepVerifier.create( userUseCase.findUserByDocument(user.getDocument()).log() )
+                .expectNextCount( 1 )
+                .verifyComplete();
+    }
+
+    @Test
+    @DisplayName("Must return error if not found")
+    void testFindUserByDocumentWithNotFound() {
+
+        when( userRepository.findByDocument(user.getDocument()) ).thenReturn(Mono.empty());
+
+        StepVerifier.create( userUseCase.findUserByDocument(user.getDocument()).log() )
+                .expectError(CrediyaResourceNotFoundException.class)
+                .verify();
+    }
 
 
 

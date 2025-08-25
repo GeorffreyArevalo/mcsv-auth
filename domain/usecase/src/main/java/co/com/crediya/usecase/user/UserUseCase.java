@@ -24,12 +24,7 @@ public class UserUseCase implements UserServicePort {
                             return Mono.error( new CrediyaBadRequestException( String.format(ExceptionMessages.USER_WITH_EMAIL_EXIST.getMessage(),  user.getEmail()) ));
                         }
                 ).switchIfEmpty(
-                        userRepository.findByDocument(user.getDocument())
-                                .flatMap( existingUser -> {
-                                        logger.warn("User with document={} already exists", user.getDocument());
-                                        return Mono.error( new CrediyaBadRequestException( String.format(ExceptionMessages.USER_WITH_DOCUMENT_EXIST.getMessage(),  existingUser.getDocument()) ));
-                                    }
-                                )
+                        this.getUserByDocument(user.getDocument())
                 )
                 .switchIfEmpty( UserValidator.validateSaveUser(user) )
                 .flatMap( validUser -> userRepository.save(user)
@@ -47,5 +42,14 @@ public class UserUseCase implements UserServicePort {
                             String.format(ExceptionMessages.USER_WITH_DOCUMENT_NOT_EXIST.getMessage(),  document )
                         );
                 }));
+    }
+
+    private Mono<User> getUserByDocument( String document ) {
+        return userRepository.findByDocument(document)
+                .flatMap( existingUser -> {
+                            logger.warn("User with document={} already exists", existingUser.getDocument());
+                            return Mono.error( new CrediyaBadRequestException( String.format(ExceptionMessages.USER_WITH_DOCUMENT_EXIST.getMessage(),  existingUser.getDocument()) ));
+                        }
+                );
     }
 }
