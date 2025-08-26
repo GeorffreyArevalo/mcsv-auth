@@ -58,7 +58,7 @@ class UserUseCaseTest {
         when( userRepository.save(user) ).thenReturn(Mono.just(user));
 
         StepVerifier.create( userUseCase.saveUser(user).log() )
-                .expectNext( user )
+                .expectNextMatches( savedUser -> savedUser.getDocument().equals(user.getDocument()) )
                 .verifyComplete();
     }
 

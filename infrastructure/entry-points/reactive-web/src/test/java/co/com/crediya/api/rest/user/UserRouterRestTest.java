@@ -3,9 +3,11 @@ package co.com.crediya.api.rest.user;
 import co.com.crediya.api.config.PathsConfig;
 import co.com.crediya.api.dtos.user.CreateUserRequest;
 import co.com.crediya.api.dtos.user.UserResponse;
+import co.com.crediya.api.mappers.UserMapper;
 import co.com.crediya.model.User;
 import co.com.crediya.usecase.user.UserUseCase;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import reactor.core.publisher.Mono;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.any;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -35,8 +38,20 @@ class UserRouterRestTest {
     private WebTestClient webTestClient;
 
     @MockitoBean
+    private UserMapper userMapper;
+
+    @MockitoBean
     private UserUseCase userUseCase;
 
+    private final UserResponse userResponse = new UserResponse(
+            "Julian",
+            "Arevalo",
+            "arevalo@gmail.com",
+            "10900122",
+            "210012312",
+            LocalDate.now(),
+            BigDecimal.TEN
+    );
 
     private final CreateUserRequest createUserRequest = new CreateUserRequest(
             "Julian",
@@ -72,6 +87,9 @@ class UserRouterRestTest {
     void testListenSaveUser() {
 
         when( userUseCase.saveUser(user) ).thenReturn(Mono.just(user));
+        when( userMapper.modelToResponse( any(User.class) ) ).thenReturn( userResponse );
+        when( userMapper.createRequestToModel( any( CreateUserRequest.class ) ) ).thenReturn( user );
+
 
         webTestClient.post()
                 .uri(USERS_PATH)
@@ -79,8 +97,8 @@ class UserRouterRestTest {
                 .exchange()
                 .expectStatus().isCreated()
                 .expectBody(UserResponse.class)
-                .value(userResponse -> {
-                            Assertions.assertThat(userResponse).isNotNull();
+                .value(response -> {
+                            Assertions.assertThat(response).isNotNull();
                         }
                 );
     }
@@ -96,8 +114,8 @@ class UserRouterRestTest {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(UserResponse.class)
-                .value( userResponse -> {
-                    Assertions.assertThat( userResponse.document() ).isEqualTo( user.getDocument() );
+                .value( response -> {
+                    Assertions.assertThat( response.document() ).isEqualTo( user.getDocument() );
                 } );
 
     }

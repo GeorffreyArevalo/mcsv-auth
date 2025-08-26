@@ -15,9 +15,8 @@ public class UserRepositoryAdapter extends ReactiveAdapterOperations<User, UserE
         super(repository, mapper, d -> mapper.map(d, User.class));
     }
 
-
     @Override
-    public Mono<User> save(User user){
+    public Mono<User> saveUser(User user){
         return super.save(user);
     }
 

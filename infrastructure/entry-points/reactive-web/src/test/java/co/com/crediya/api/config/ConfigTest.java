@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
@@ -33,6 +34,9 @@ class ConfigTest {
 
     @MockitoBean
     private UserMapper userMapper;
+
+    @MockitoBean
+    private TransactionalOperator transactionalOperator;
 
     @MockitoBean
     private UserUseCase userUseCase;
@@ -55,6 +59,8 @@ class ConfigTest {
             LocalDate.now(),
             BigDecimal.TEN
     );
+
+
 
     @BeforeEach
     void setUp() {

@@ -18,17 +18,17 @@ public class UserUseCase implements UserServicePort {
     @Override
     public Mono<User> saveUser(User user) {
         logger.info("Saving user {}", user);
-        return userRepository.findByEmail(user.getEmail())
+        return userRepository.existByEmail(user.getEmail())
                 .flatMap( existingUser -> {
-                            logger.warn("User with email={} already exists", user.getEmail());
-                            return Mono.error( new CrediyaBadRequestException( String.format(ExceptionMessages.USER_WITH_EMAIL_EXIST.getMessage(),  user.getEmail()) ));
-                        }
+                    logger.warn("User with email={} already exists", user.getEmail());
+                    return Mono.error( new CrediyaBadRequestException( String.format(ExceptionMessages.USER_WITH_EMAIL_EXIST.getMessage(),  existingUser.getEmail()) ));
+                }
                 ).switchIfEmpty(
                         this.getUserByDocument(user.getDocument())
                 )
                 .switchIfEmpty( UserValidator.validateSaveUser(user) )
-                .flatMap( validUser -> userRepository.save(user)
-                                .doOnSuccess( loggedUser -> logger.info("User saved successfully.") ) );
+                .flatMap( validUser -> userRepository.saveUser(user))
+                .doOnSuccess( loggedUser -> logger.info("User saved successfully.") );
 
     }
 
