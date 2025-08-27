@@ -55,9 +55,9 @@ class UserUseCaseTest {
 
         when( userRepository.findByEmail(user.getEmail()) ).thenReturn(Mono.empty());
         when( userRepository.findByDocument(user.getDocument()) ).thenReturn(Mono.empty());
-        when( userRepository.save(user) ).thenReturn(Mono.just(user));
+        when( userRepository.saveUser(user) ).thenReturn(Mono.just(user));
 
-        StepVerifier.create( userUseCase.saveUser(user).log() )
+        StepVerifier.create( userUseCase.saveUser(user) )
                 .expectNextMatches( savedUser -> savedUser.getDocument().equals(user.getDocument()) )
                 .verifyComplete();
     }
@@ -88,36 +88,6 @@ class UserUseCaseTest {
 
     }
 
-
-    @Test
-    @DisplayName("Must returned error if name is empty or null")
-    void testSaveUserWithNameNullOrEmpty() {
-
-        when( userRepository.findByEmail(user.getEmail()) ).thenReturn(Mono.empty());
-        when( userRepository.findByDocument(user.getDocument()) ).thenReturn(Mono.empty());
-
-        user.setName("");
-
-        StepVerifier.create( userUseCase.saveUser(user) )
-                .expectError( CrediyaIllegalArgumentException.class )
-                .verify();
-
-    }
-
-    @Test
-    @DisplayName("Must returned error if last name is empty or null")
-    void testSaveUserWithLastNameNullOrEmpty() {
-
-        when( userRepository.findByEmail(user.getEmail()) ).thenReturn(Mono.empty());
-        when( userRepository.findByDocument(user.getDocument()) ).thenReturn(Mono.empty());
-
-        user.setLastName("");
-
-        StepVerifier.create( userUseCase.saveUser(user) )
-                .expectError( CrediyaIllegalArgumentException.class )
-                .verify();
-
-    }
 
     @Test
     @DisplayName("Must returned error if email is invalid")

@@ -1,10 +1,10 @@
 package co.com.crediya.api.config;
 
-import co.com.crediya.api.dtos.user.CreateUserRequest;
 import co.com.crediya.api.dtos.user.UserResponse;
 import co.com.crediya.api.mappers.UserMapper;
 import co.com.crediya.api.rest.user.UserHandler;
 import co.com.crediya.api.rest.user.UserRouterRest;
+import co.com.crediya.api.util.HandlersUtil;
 import co.com.crediya.model.User;
 import co.com.crediya.usecase.user.UserUseCase;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
@@ -34,9 +33,6 @@ class ConfigTest {
 
     @MockitoBean
     private UserMapper userMapper;
-
-    @MockitoBean
-    private TransactionalOperator transactionalOperator;
 
     @MockitoBean
     private UserUseCase userUseCase;

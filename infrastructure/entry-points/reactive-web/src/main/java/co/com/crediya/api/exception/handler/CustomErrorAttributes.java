@@ -16,7 +16,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CustomErrorAttributes extends DefaultErrorAttributes {
 
-    private final HandlersUtil handlersUtil;
 
     @Override
     public Map<String, Object> getErrorAttributes(ServerRequest request, ErrorAttributeOptions options) {
@@ -30,6 +29,6 @@ public class CustomErrorAttributes extends DefaultErrorAttributes {
                 .message(customException.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();
-        return  handlersUtil.buildBodyResponse(false, customException.getStatusCode().getStatusCode(), "error", customError);
+        return  HandlersUtil.buildBodyResponse(false, customException.getStatusCode().getStatusCode(), "error", customError);
     }
 }
