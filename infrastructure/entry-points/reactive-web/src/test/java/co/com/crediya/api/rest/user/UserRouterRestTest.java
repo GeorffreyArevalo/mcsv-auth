@@ -42,6 +42,9 @@ class UserRouterRestTest {
     @MockitoBean
     private UserUseCase userUseCase;
 
+    @Autowired
+    private PathsConfig pathsConfig;
+
     private final UserResponse userResponse = new UserResponse(
             "Julian",
             "Arevalo",
@@ -90,9 +93,6 @@ class UserRouterRestTest {
             .basePayment(BigDecimal.TEN)
             .build();
 
-    @Autowired
-    private PathsConfig pathsConfig;
-
     @Test
     void shouldLoadUserPathPathProperties() {
         assertEquals(USERS_PATH, pathsConfig.getUsers());
@@ -126,7 +126,7 @@ class UserRouterRestTest {
     }
 
     @Test
-    @DisplayName("Must return error when save a user successfully")
+    @DisplayName("Must return error when save a user.")
     void testListenSaveUserWithError() {
 
         when( userUseCase.saveUser(any(User.class)) ).thenReturn( Mono.just(user) );

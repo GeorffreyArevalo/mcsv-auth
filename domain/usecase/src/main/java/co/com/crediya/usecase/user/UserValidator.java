@@ -14,6 +14,8 @@ public class UserValidator {
     private static final String REGEX_VALID_EMAIL = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
     private static final String REGEX_ONLY_NUMBERS = "^\\d+$";
 
+    private UserValidator() {}
+
     public static Mono<User> validateSaveUser(User user) {
 
         if( !user.getDocument().matches(REGEX_ONLY_NUMBERS) ) {

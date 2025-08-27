@@ -8,6 +8,8 @@ import java.util.Map;
 
 public class HandlersUtil {
 
+    private HandlersUtil() {}
+
     public static Map<String, Object> getFieldErrors( Errors errors ) {
         Map<String, Object> fieldErrors = new HashMap<>();
         errors.getFieldErrors().forEach(fieldError -> fieldErrors.put(
