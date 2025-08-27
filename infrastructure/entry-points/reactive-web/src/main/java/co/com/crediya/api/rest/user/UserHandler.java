@@ -5,6 +5,7 @@ import co.com.crediya.api.dtos.user.UserResponse;
 import co.com.crediya.api.exception.model.CustomError;
 import co.com.crediya.api.mappers.UserMapper;
 import co.com.crediya.api.util.HandlersUtil;
+import co.com.crediya.ports.TransactionManagement;
 import co.com.crediya.usecase.user.UserServicePort;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -35,6 +36,8 @@ public class UserHandler {
     private final UserMapper userMapper;
     private final Validator validator;
 
+    private final TransactionManagement transactionManagement;
+
 
 
     @Operation( tags = "Users", operationId = "saveUser", description = "Save a user", summary = "Save a user",
@@ -52,7 +55,7 @@ public class UserHandler {
                     if( errors.hasErrors() ) return HandlersUtil.buildBadRequestResponse(errors);
                     return Mono.just(userRequest)
                             .map( userMapper::createRequestToModel )
-                            .flatMap( userServicePort::saveUser )
+                            .flatMap( saveUser -> transactionManagement.inTransaction(userServicePort.saveUser(saveUser)) )
                             .map( userMapper::modelToResponse )
                             .flatMap( savedUser ->
                                     ServerResponse.created(URI.create(""))

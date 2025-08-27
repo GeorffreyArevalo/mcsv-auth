@@ -5,6 +5,7 @@ import co.com.crediya.api.dtos.user.CreateUserRequest;
 import co.com.crediya.api.dtos.user.UserResponse;
 import co.com.crediya.api.mappers.UserMapper;
 import co.com.crediya.model.User;
+import co.com.crediya.ports.TransactionManagement;
 import co.com.crediya.usecase.user.UserUseCase;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -41,6 +42,9 @@ class UserRouterRestTest {
 
     @MockitoBean
     private UserUseCase userUseCase;
+
+    @MockitoBean
+    private TransactionManagement transactionManagement;
 
     @Autowired
     private PathsConfig pathsConfig;
@@ -108,6 +112,8 @@ class UserRouterRestTest {
         when( userMapper.modelToResponse( any(User.class) ) ).thenReturn( userResponse );
         when( userMapper.createRequestToModel( any( CreateUserRequest.class ) ) ).thenReturn( user );
 
+        when(transactionManagement.inTransaction(any(Mono.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
 
         webTestClient.post()
                 .uri(USERS_PATH)
