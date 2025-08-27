@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 public record CreateUserRequest(
 
-        @NotBlank(message = "must be.")
+        @NotBlank(message = "is required.")
         String name,
 
         @NotBlank(message = "is required.")

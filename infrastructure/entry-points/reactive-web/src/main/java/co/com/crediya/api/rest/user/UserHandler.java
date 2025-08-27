@@ -48,14 +48,8 @@ public class UserHandler {
         return serverRequest.bodyToMono(CreateUserRequest.class)
                 .doOnNext( userRequest -> log.info("Saving user={}", userRequest))
                 .flatMap( userRequest -> {
-                    Errors errors = new BeanPropertyBindingResult(userRequest, CreateUserRequest.class.getName());
-                    validator.validate(userRequest, errors);
-
-                    if( errors.hasErrors() ) return ServerResponse.badRequest()
-                            .contentType(MediaType.APPLICATION_JSON).bodyValue(HandlersUtil.buildBodyResponse(
-                                    false, HttpStatus.BAD_REQUEST.value(), "error", HandlersUtil.getFieldErrors(errors)
-                            ));
-
+                    Errors errors = HandlersUtil.validateRequestsErrors(userRequest, CreateUserRequest.class.getName(), validator);
+                    if( errors.hasErrors() ) return HandlersUtil.buildBadRequestResponse(errors);
                     return Mono.just(userRequest)
                             .map( userMapper::createRequestToModel )
                             .flatMap( userServicePort::saveUser )
@@ -82,7 +76,6 @@ public class UserHandler {
     public Mono<ServerResponse> listenFindUserByDocument(ServerRequest serverRequest) {
         log.info("Finding user by document");
         String document  = serverRequest.pathVariable("document");
-
         return userServicePort.findUserByDocument(document)
                 .flatMap( user ->
                                 ServerResponse.ok()

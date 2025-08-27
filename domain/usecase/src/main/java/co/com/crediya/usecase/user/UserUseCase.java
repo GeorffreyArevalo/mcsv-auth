@@ -28,7 +28,6 @@ public class UserUseCase implements UserServicePort {
                 )
                 .switchIfEmpty( UserValidator.validateSaveUser(user) )
                 .flatMap( validUser -> userRepository.saveUser(user))
-//                .flatMap( userSaved -> Mono.error(new CrediyaResourceNotFoundException("Error provacado")) );
                 .doOnSuccess( loggedUser -> logger.info("User saved successfully.") );
 
     }
