@@ -7,7 +7,7 @@ import co.com.crediya.api.mappers.UserMapper;
 import co.com.crediya.api.util.HandlersResponseUtil;
 import co.com.crediya.api.util.ValidatorUtil;
 import co.com.crediya.exceptions.enums.ExceptionStatusCode;
-import co.com.crediya.usecase.user.UserServicePort;
+import co.com.crediya.usecase.user.UserUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -29,7 +29,7 @@ import java.net.URI;
 @Slf4j
 public class UserHandler {
 
-    private final UserServicePort userServicePort;
+    private final UserUseCase userUseCase;
     private final UserMapper userMapper;
     private final ValidatorUtil validatorUtil;
 
@@ -47,7 +47,7 @@ public class UserHandler {
                 .doOnNext( userRequest -> log.info("Saving user={}", userRequest))
                 .flatMap( validatorUtil::validate )
                 .map( userMapper::createRequestToModel )
-                .flatMap( userServicePort::saveUser )
+                .flatMap( userUseCase::saveUser )
                 .map( userMapper::modelToResponse )
                 .flatMap( savedUser ->
                         ServerResponse.created(URI.create(""))
@@ -69,7 +69,7 @@ public class UserHandler {
     public Mono<ServerResponse> listenFindUserByDocument(ServerRequest serverRequest) {
         log.info("Finding user by document");
         String document  = serverRequest.pathVariable("document");
-        return userServicePort.findUserByDocument(document)
+        return userUseCase.findUserByDocument(document)
                 .map( userMapper::modelToResponse )
                 .flatMap( userResponse ->
                     ServerResponse.ok()

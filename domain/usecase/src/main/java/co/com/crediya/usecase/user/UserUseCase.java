@@ -5,40 +5,33 @@ import co.com.crediya.model.User;
 import co.com.crediya.exceptions.enums.ExceptionMessages;
 import co.com.crediya.exceptions.CrediyaBadRequestException;
 import co.com.crediya.model.gateways.UserRepositoryPort;
-import co.com.crediya.ports.CrediyaLoggerPort;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
-public class UserUseCase implements UserServicePort {
+public class UserUseCase {
 
     private final UserRepositoryPort userRepository;
-    private final CrediyaLoggerPort logger;
 
-    @Override
+
     public Mono<User> saveUser(User user) {
-        logger.info("Saving user {}", user);
+
         return userRepository.existByEmailAndDocument(user.getEmail(), user.getDocument())
                 .filter( exist -> exist )
                 .flatMap( existingUser -> {
-                    logger.warn("User with email={} already exists", user.getEmail());
                     return Mono.error( new CrediyaBadRequestException( String.format(ExceptionMessages.USER_WITH_EMAIL_EXIST_OR_DOCUMENT.getMessage(),  user.getEmail(), user.getDocument()) ));
                 }
                 ).switchIfEmpty( UserValidator.validateSaveUser(user) )
-                .flatMap( validUser -> userRepository.saveUser(user))
-                .doOnSuccess( loggedUser -> logger.info("User saved successfully.") );
+                .flatMap( validUser -> userRepository.saveUser(user));
 
     }
 
-    @Override
+
     public Mono<User> findUserByDocument(String document) {
-        logger.info("Finding user by document={}", document);
         return userRepository.findByDocument(document)
-                .switchIfEmpty( Mono.error(() -> {
-                        logger.warn("User not found by document={}", document);
-                        return new CrediyaResourceNotFoundException(
+                .switchIfEmpty( Mono.error(() -> new CrediyaResourceNotFoundException(
                             String.format(ExceptionMessages.USER_WITH_DOCUMENT_NOT_EXIST.getMessage(),  document )
-                        );
-                }));
+                        )
+                ));
     }
 }

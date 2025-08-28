@@ -21,6 +21,5 @@ public class CrediyaResponseDTO<T> {
     private String code;
     private T data;
     private List<String> errors;
-    private T error;
 
 }

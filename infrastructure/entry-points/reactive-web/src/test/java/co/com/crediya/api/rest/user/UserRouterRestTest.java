@@ -4,6 +4,7 @@ import co.com.crediya.api.config.PathsConfig;
 import co.com.crediya.api.dtos.user.CreateUserRequestDTO;
 import co.com.crediya.api.dtos.user.UserResponseDTO;
 import co.com.crediya.api.mappers.UserMapper;
+import co.com.crediya.api.util.HandlersResponseUtil;
 import co.com.crediya.api.util.ValidatorUtil;
 import co.com.crediya.exceptions.enums.ExceptionStatusCode;
 import co.com.crediya.model.User;
@@ -120,8 +121,7 @@ class UserRouterRestTest {
                 .exchange()
                 .expectStatus().isCreated()
                 .expectBody()
-                .jsonPath("$.success").isEqualTo(true)
-                .jsonPath("$.statusCode").isEqualTo(ExceptionStatusCode.CREATED.status())
+                .jsonPath("$.code").isEqualTo(ExceptionStatusCode.CREATED.status())
                 .jsonPath("$.data.document").isEqualTo(user.getDocument())
                 .jsonPath("$.data.email")
                 .value( email -> {
@@ -131,18 +131,34 @@ class UserRouterRestTest {
     }
 
     @Test
+    @DisplayName("Must save a user successfully")
+    void testListenSaveUserWithError() {
+
+        when( userUseCase.saveUser(user) ).thenReturn(Mono.just(user));
+
+        webTestClient.post()
+                .uri(USERS_PATH)
+                .bodyValue(createBadUserRequest)
+                .exchange()
+                .expectStatus().is5xxServerError()
+                .expectBody();
+    }
+
+
+
+    @Test
     @DisplayName("Must find user with document")
     void testListenFindUserByDocument() {
 
         when( userUseCase.findUserByDocument(user.getDocument()) ).thenReturn(Mono.just(user));
+        when( userMapper.modelToResponse( any(User.class) ) ).thenReturn(userResponseDTO);
 
         webTestClient.get()
                 .uri(USERS_PATH_BY_DOCUMENT, createUserRequestDTO.document())
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
-                .jsonPath("$.success").isEqualTo(true)
-                .jsonPath("$.statusCode").isEqualTo(ExceptionStatusCode.OK.status())
+                .jsonPath("$.code").isEqualTo(ExceptionStatusCode.OK.status())
                 .jsonPath("$.data.name").isEqualTo(user.getName())
                 .jsonPath("$.data.email")
                 .value( email -> {

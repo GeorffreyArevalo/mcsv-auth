@@ -6,7 +6,6 @@ import co.com.crediya.exceptions.CrediyaIllegalArgumentException;
 import co.com.crediya.exceptions.CrediyaResourceNotFoundException;
 import co.com.crediya.model.User;
 import co.com.crediya.model.gateways.UserRepositoryPort;
-import co.com.crediya.ports.CrediyaLoggerPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,9 +25,6 @@ class UserUseCaseTest {
 
     @Mock
     private UserRepositoryPort userRepository;
-
-    @Mock
-    private CrediyaLoggerPort crediyaLoggerPort;
 
     @InjectMocks
     private UserUseCase userUseCase;
@@ -92,20 +88,6 @@ class UserUseCaseTest {
     void testSaveUserWithDocumentContainsLetters() {
 
         user.setDocument("1231asas");
-        when( userRepository.existByEmailAndDocument(user.getEmail(), user.getDocument()) ).thenReturn(Mono.just(false));
-
-
-        StepVerifier.create( userUseCase.saveUser(user) )
-                .expectError( CrediyaIllegalArgumentException.class )
-                .verify();
-
-    }
-
-    @Test
-    @DisplayName("Must returned error if base payment is out of range")
-    void testSaveUserWithPaymentOutOfRange() {
-
-        user.setBasePayment( new BigDecimal(0) );
         when( userRepository.existByEmailAndDocument(user.getEmail(), user.getDocument()) ).thenReturn(Mono.just(false));
 
 

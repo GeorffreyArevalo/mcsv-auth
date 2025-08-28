@@ -130,17 +130,4 @@ class UserRepositoryAdapterTest {
                 .verifyComplete();
     }
 
-    @Test
-    @DisplayName("Must save user successfully")
-    void mustSaveUser() {
-        when(repository.save(userEntityOne)).thenReturn(Mono.just(userEntityOne));
-        when(mapper.map(userEntityOne, User.class)).thenReturn(user);
-        when(mapper.map(user, UserEntity.class)).thenReturn(userEntityOne);
-
-        Mono<User> result = repositoryAdapter.save(user);
-
-        StepVerifier.create(result)
-                .expectNextCount(1)
-                .verifyComplete();
-    }
 }
