@@ -1,10 +1,10 @@
 package co.com.crediya.api.config;
 
-import co.com.crediya.api.dtos.user.UserResponse;
+import co.com.crediya.api.dtos.user.UserResponseDTO;
 import co.com.crediya.api.mappers.UserMapper;
 import co.com.crediya.api.rest.user.UserHandler;
 import co.com.crediya.api.rest.user.UserRouterRest;
-import co.com.crediya.api.util.HandlersUtil;
+import co.com.crediya.api.util.ValidatorUtil;
 import co.com.crediya.model.User;
 import co.com.crediya.usecase.user.UserUseCase;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +23,7 @@ import java.time.LocalDate;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.any;
 
-@ContextConfiguration(classes = {UserRouterRest.class, UserHandler.class, PathsConfig.class})
+@ContextConfiguration(classes = {UserRouterRest.class, UserHandler.class, PathsConfig.class, ValidatorUtil.class})
 @WebFluxTest
 @Import({CorsConfig.class, SecurityHeadersConfig.class})
 class ConfigTest {
@@ -37,6 +37,7 @@ class ConfigTest {
     @MockitoBean
     private UserUseCase userUseCase;
 
+
     private final User user = User.builder().
             name("Julian")
             .lastName("Arevalo")
@@ -46,7 +47,7 @@ class ConfigTest {
             .basePayment(BigDecimal.TEN)
             .build();
 
-    private final UserResponse userResponse = new UserResponse(
+    private final UserResponseDTO userResponseDTO = new UserResponseDTO(
             "Julian",
             "Arevalo",
             "arevalo@gmail.com",
@@ -61,7 +62,7 @@ class ConfigTest {
     @BeforeEach
     void setUp() {
         when(userUseCase.findUserByDocument(user.getDocument())).thenReturn(Mono.just(user));
-        when( userMapper.modelToResponse(any()) ).thenReturn(userResponse);
+        when( userMapper.modelToResponse(any()) ).thenReturn(userResponseDTO);
     }
 
     @Test

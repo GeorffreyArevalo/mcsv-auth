@@ -88,15 +88,13 @@ class UserRepositoryAdapterTest {
     @DisplayName("Must find user by email")
     void mustFindUserByEmail() {
 
-        when(repository.findByEmail( userEntityOne.getEmail() ))
-                .thenReturn( Mono.just(userEntityOne) );
+        when(repository.existsByEmailAndDocument( userEntityOne.getEmail(), userEntityOne.getDocument() ))
+                .thenReturn( Mono.just(true) );
 
-        when(mapper.map(userEntityOne, User.class)).thenReturn(user);
-
-        Mono<User> result = repositoryAdapter.findByEmail(userEntityOne.getEmail());
+        Mono<Boolean> result = repositoryAdapter.existByEmailAndDocument(userEntityOne.getEmail(), userEntityOne.getDocument());
 
         StepVerifier.create(result)
-                .expectNextMatches( userFound -> userFound.getEmail().equals(user.getEmail()) )
+                .expectNext(true)
                 .verifyComplete();
     }
 

@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public record CreateUserRequest(
+public record CreateUserRequestDTO(
 
         @NotBlank(message = "is required.")
         String name,

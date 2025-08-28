@@ -1,7 +1,7 @@
 package co.com.crediya.api.mappers;
 
-import co.com.crediya.api.dtos.user.CreateUserRequest;
-import co.com.crediya.api.dtos.user.UserResponse;
+import co.com.crediya.api.dtos.user.CreateUserRequestDTO;
+import co.com.crediya.api.dtos.user.UserResponseDTO;
 import co.com.crediya.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -13,8 +13,8 @@ import org.mapstruct.ReportingPolicy;
 )
 public interface UserMapper {
 
-    User createRequestToModel( CreateUserRequest request );
+    User createRequestToModel( CreateUserRequestDTO request );
 
-    UserResponse modelToResponse(User model );
+    UserResponseDTO modelToResponse(User model );
 
 }

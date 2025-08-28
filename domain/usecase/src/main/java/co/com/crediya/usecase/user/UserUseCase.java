@@ -18,15 +18,13 @@ public class UserUseCase implements UserServicePort {
     @Override
     public Mono<User> saveUser(User user) {
         logger.info("Saving user {}", user);
-        return userRepository.findByEmail(user.getEmail())
+        return userRepository.existByEmailAndDocument(user.getEmail(), user.getDocument())
+                .filter( exist -> exist )
                 .flatMap( existingUser -> {
                     logger.warn("User with email={} already exists", user.getEmail());
-                    return Mono.error( new CrediyaBadRequestException( String.format(ExceptionMessages.USER_WITH_EMAIL_EXIST.getMessage(),  existingUser.getEmail()) ));
+                    return Mono.error( new CrediyaBadRequestException( String.format(ExceptionMessages.USER_WITH_EMAIL_EXIST_OR_DOCUMENT.getMessage(),  user.getEmail(), user.getDocument()) ));
                 }
-                ).switchIfEmpty(
-                        this.getUserByDocument(user.getDocument())
-                )
-                .switchIfEmpty( UserValidator.validateSaveUser(user) )
+                ).switchIfEmpty( UserValidator.validateSaveUser(user) )
                 .flatMap( validUser -> userRepository.saveUser(user))
                 .doOnSuccess( loggedUser -> logger.info("User saved successfully.") );
 
@@ -42,14 +40,5 @@ public class UserUseCase implements UserServicePort {
                             String.format(ExceptionMessages.USER_WITH_DOCUMENT_NOT_EXIST.getMessage(),  document )
                         );
                 }));
-    }
-
-    private Mono<User> getUserByDocument( String document ) {
-        return userRepository.findByDocument(document)
-                .flatMap( existingUser -> {
-                            logger.warn("User with document={} already exists", existingUser.getDocument());
-                            return Mono.error( new CrediyaBadRequestException( String.format(ExceptionMessages.USER_WITH_DOCUMENT_EXIST.getMessage(),  existingUser.getDocument()) ));
-                        }
-                );
     }
 }

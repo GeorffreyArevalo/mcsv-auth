@@ -53,8 +53,7 @@ class UserUseCaseTest {
     @DisplayName("Must save a user successfully")
     void testSaveUser() {
 
-        when( userRepository.findByEmail(user.getEmail()) ).thenReturn(Mono.empty());
-        when( userRepository.findByDocument(user.getDocument()) ).thenReturn(Mono.empty());
+        when( userRepository.existByEmailAndDocument(user.getEmail(), user.getDocument()) ).thenReturn(Mono.just(false));
         when( userRepository.saveUser(user) ).thenReturn(Mono.just(user));
 
         StepVerifier.create( userUseCase.saveUser(user) )
@@ -63,24 +62,10 @@ class UserUseCaseTest {
     }
 
     @Test
-    @DisplayName("Must returned error if email already exists")
-    void testSaveUserWithEmailAlreadyExists() {
+    @DisplayName("Must returned error or document if email already exists")
+    void testSaveUserWithEmailOrDocumentAlreadyExists() {
 
-        when( userRepository.findByEmail(user.getEmail()) ).thenReturn(Mono.just(user));
-        when( userRepository.findByDocument(user.getDocument()) ).thenReturn(Mono.empty());
-
-        StepVerifier.create( userUseCase.saveUser(user) )
-                .expectError( CrediyaBadRequestException.class )
-                .verify();
-
-    }
-
-    @Test
-    @DisplayName("Must returned error if document already exists")
-    void testSaveUserWithDocumentAlreadyExists() {
-
-        when( userRepository.findByEmail(user.getEmail()) ).thenReturn(Mono.empty());
-        when( userRepository.findByDocument(user.getDocument()) ).thenReturn(Mono.just(user));
+        when( userRepository.existByEmailAndDocument(user.getEmail(), user.getDocument()) ).thenReturn(Mono.just(true));
 
         StepVerifier.create( userUseCase.saveUser(user) )
                 .expectError( CrediyaBadRequestException.class )
@@ -94,8 +79,21 @@ class UserUseCaseTest {
     void testSaveUserWithInvalidEmail() {
 
         user.setEmail("georffrey");
-        when( userRepository.findByEmail(user.getEmail()) ).thenReturn(Mono.empty());
-        when( userRepository.findByDocument(user.getDocument()) ).thenReturn(Mono.empty());
+        when( userRepository.existByEmailAndDocument(user.getEmail(), user.getDocument()) ).thenReturn(Mono.just(false));
+
+        StepVerifier.create( userUseCase.saveUser(user) )
+                .expectError( CrediyaIllegalArgumentException.class )
+                .verify();
+
+    }
+
+    @Test
+    @DisplayName("Must returned error if document contains letters")
+    void testSaveUserWithDocumentContainsLetters() {
+
+        user.setDocument("1231asas");
+        when( userRepository.existByEmailAndDocument(user.getEmail(), user.getDocument()) ).thenReturn(Mono.just(false));
+
 
         StepVerifier.create( userUseCase.saveUser(user) )
                 .expectError( CrediyaIllegalArgumentException.class )
@@ -108,8 +106,8 @@ class UserUseCaseTest {
     void testSaveUserWithPaymentOutOfRange() {
 
         user.setBasePayment( new BigDecimal(0) );
-        when( userRepository.findByEmail(user.getEmail()) ).thenReturn(Mono.empty());
-        when( userRepository.findByDocument(user.getDocument()) ).thenReturn(Mono.empty());
+        when( userRepository.existByEmailAndDocument(user.getEmail(), user.getDocument()) ).thenReturn(Mono.just(false));
+
 
         StepVerifier.create( userUseCase.saveUser(user) )
                 .expectError( CrediyaIllegalArgumentException.class )

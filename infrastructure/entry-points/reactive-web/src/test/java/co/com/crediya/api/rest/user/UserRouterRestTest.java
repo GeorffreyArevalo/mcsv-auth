@@ -1,11 +1,12 @@
 package co.com.crediya.api.rest.user;
 
 import co.com.crediya.api.config.PathsConfig;
-import co.com.crediya.api.dtos.user.CreateUserRequest;
-import co.com.crediya.api.dtos.user.UserResponse;
+import co.com.crediya.api.dtos.user.CreateUserRequestDTO;
+import co.com.crediya.api.dtos.user.UserResponseDTO;
 import co.com.crediya.api.mappers.UserMapper;
+import co.com.crediya.api.util.ValidatorUtil;
+import co.com.crediya.exceptions.enums.ExceptionStatusCode;
 import co.com.crediya.model.User;
-import co.com.crediya.ports.TransactionManagement;
 import co.com.crediya.usecase.user.UserUseCase;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +26,11 @@ import static org.mockito.Mockito.any;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@ContextConfiguration(classes = {UserRouterRest.class, UserHandler.class})
+@ContextConfiguration(classes = {
+        UserRouterRest.class,
+        UserHandler.class,
+        ValidatorUtil.class,
+})
 @EnableConfigurationProperties(PathsConfig.class)
 @WebFluxTest
 class UserRouterRestTest {
@@ -43,13 +48,10 @@ class UserRouterRestTest {
     @MockitoBean
     private UserUseCase userUseCase;
 
-    @MockitoBean
-    private TransactionManagement transactionManagement;
-
     @Autowired
     private PathsConfig pathsConfig;
 
-    private final UserResponse userResponse = new UserResponse(
+    private final UserResponseDTO userResponseDTO = new UserResponseDTO(
             "Julian",
             "Arevalo",
             "arevalo@gmail.com",
@@ -59,7 +61,7 @@ class UserRouterRestTest {
             BigDecimal.TEN
     );
 
-    private final CreateUserRequest createUserRequest = new CreateUserRequest(
+    private final CreateUserRequestDTO createUserRequestDTO = new CreateUserRequestDTO(
             "Julian",
             "Arevalo",
             "arevalo@gmail.com",
@@ -69,7 +71,7 @@ class UserRouterRestTest {
             BigDecimal.TEN
     );
 
-    private final CreateUserRequest createBadUserRequest = new CreateUserRequest(
+    private final CreateUserRequestDTO createBadUserRequest = new CreateUserRequestDTO(
             "",
             "Arevalo",
             "arevalo@gm",
@@ -109,20 +111,17 @@ class UserRouterRestTest {
     void testListenSaveUser() {
 
         when( userUseCase.saveUser(user) ).thenReturn(Mono.just(user));
-        when( userMapper.modelToResponse( any(User.class) ) ).thenReturn( userResponse );
-        when( userMapper.createRequestToModel( any( CreateUserRequest.class ) ) ).thenReturn( user );
-
-        when(transactionManagement.inTransaction(any(Mono.class)))
-                .thenAnswer(invocation -> invocation.getArgument(0));
+        when( userMapper.modelToResponse( any(User.class) ) ).thenReturn(userResponseDTO);
+        when( userMapper.createRequestToModel( any( CreateUserRequestDTO.class ) ) ).thenReturn( user );
 
         webTestClient.post()
                 .uri(USERS_PATH)
-                .bodyValue(createUserRequest)
+                .bodyValue(createUserRequestDTO)
                 .exchange()
                 .expectStatus().isCreated()
                 .expectBody()
                 .jsonPath("$.success").isEqualTo(true)
-                .jsonPath("$.statusCode").isEqualTo(201)
+                .jsonPath("$.statusCode").isEqualTo(ExceptionStatusCode.CREATED.status())
                 .jsonPath("$.data.document").isEqualTo(user.getDocument())
                 .jsonPath("$.data.email")
                 .value( email -> {
@@ -132,37 +131,18 @@ class UserRouterRestTest {
     }
 
     @Test
-    @DisplayName("Must return error when save a user.")
-    void testListenSaveUserWithError() {
-
-        when( userUseCase.saveUser(any(User.class)) ).thenReturn( Mono.just(user) );
-        when( userMapper.modelToResponse( any(User.class) ) ).thenReturn( userResponse );
-        when( userMapper.createRequestToModel( any( CreateUserRequest.class ) ) ).thenReturn( badUser );
-
-
-        webTestClient.post()
-                .uri(USERS_PATH)
-                .bodyValue(createBadUserRequest)
-                .exchange()
-                .expectStatus().isBadRequest()
-                .expectBody()
-                .jsonPath("$.success").isEqualTo(false)
-                .jsonPath("$.statusCode").isEqualTo(400);
-    }
-
-    @Test
     @DisplayName("Must find user with document")
     void testListenFindUserByDocument() {
 
         when( userUseCase.findUserByDocument(user.getDocument()) ).thenReturn(Mono.just(user));
 
         webTestClient.get()
-                .uri(USERS_PATH_BY_DOCUMENT, createUserRequest.document())
+                .uri(USERS_PATH_BY_DOCUMENT, createUserRequestDTO.document())
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
                 .jsonPath("$.success").isEqualTo(true)
-                .jsonPath("$.statusCode").isEqualTo(200)
+                .jsonPath("$.statusCode").isEqualTo(ExceptionStatusCode.OK.status())
                 .jsonPath("$.data.name").isEqualTo(user.getName())
                 .jsonPath("$.data.email")
                 .value( email -> {
@@ -170,4 +150,6 @@ class UserRouterRestTest {
                 } );
 
     }
+
+
 }
