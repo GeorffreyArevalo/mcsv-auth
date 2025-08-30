@@ -16,13 +16,16 @@ public class UserUseCase {
 
     public Mono<User> saveUser(User user) {
 
-        return userRepository.existByEmailAndDocument(user.getEmail(), user.getDocument())
-                .filter( exist -> exist )
-                .flatMap( existingUser -> {
-                    return Mono.error( new CrediyaBadRequestException( String.format(ExceptionMessages.USER_WITH_EMAIL_EXIST_OR_DOCUMENT.getMessage(),  user.getEmail(), user.getDocument()) ));
-                }
-                ).switchIfEmpty( UserValidator.validateSaveUser(user) )
-                .flatMap( validUser -> userRepository.saveUser(user));
+        return userRepository.existByEmailOrDocument(user.getEmail(), user.getDocument())
+                .filter( exists -> !exists )
+                .switchIfEmpty(
+                        Mono.error(
+                                new CrediyaBadRequestException(String.format(ExceptionMessages.USER_WITH_EMAIL_EXIST_OR_DOCUMENT.getMessage(),  user.getEmail(), user.getDocument()))
+                        )
+                ).then(
+                        userRepository.saveUser(user)
+                );
+
 
     }
 

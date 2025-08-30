@@ -88,10 +88,10 @@ class UserRepositoryAdapterTest {
     @DisplayName("Must find user by email")
     void mustFindUserByEmail() {
 
-        when(repository.existsByEmailAndDocument( userEntityOne.getEmail(), userEntityOne.getDocument() ))
+        when(repository.existsByEmailOrDocument( userEntityOne.getEmail(), userEntityOne.getDocument() ))
                 .thenReturn( Mono.just(true) );
 
-        Mono<Boolean> result = repositoryAdapter.existByEmailAndDocument(userEntityOne.getEmail(), userEntityOne.getDocument());
+        Mono<Boolean> result = repositoryAdapter.existByEmailOrDocument(userEntityOne.getEmail(), userEntityOne.getDocument());
 
         StepVerifier.create(result)
                 .expectNext(true)

@@ -2,7 +2,6 @@ package co.com.crediya.usecase.user;
 
 
 import co.com.crediya.exceptions.CrediyaBadRequestException;
-import co.com.crediya.exceptions.CrediyaIllegalArgumentException;
 import co.com.crediya.exceptions.CrediyaResourceNotFoundException;
 import co.com.crediya.model.User;
 import co.com.crediya.model.gateways.UserRepositoryPort;
@@ -49,7 +48,7 @@ class UserUseCaseTest {
     @DisplayName("Must save a user successfully")
     void testSaveUser() {
 
-        when( userRepository.existByEmailAndDocument(user.getEmail(), user.getDocument()) ).thenReturn(Mono.just(false));
+        when( userRepository.existByEmailOrDocument(user.getEmail(), user.getDocument()) ).thenReturn(Mono.just(false));
         when( userRepository.saveUser(user) ).thenReturn(Mono.just(user));
 
         StepVerifier.create( userUseCase.saveUser(user) )
@@ -58,41 +57,14 @@ class UserUseCaseTest {
     }
 
     @Test
-    @DisplayName("Must returned error or document if email already exists")
+    @DisplayName("Must returned error if user with document or email already exists")
     void testSaveUserWithEmailOrDocumentAlreadyExists() {
 
-        when( userRepository.existByEmailAndDocument(user.getEmail(), user.getDocument()) ).thenReturn(Mono.just(true));
+        when( userRepository.existByEmailOrDocument(user.getEmail(), user.getDocument()) ).thenReturn(Mono.just(true));
+        when( userRepository.saveUser(user) ).thenReturn(Mono.just(user));
 
         StepVerifier.create( userUseCase.saveUser(user) )
                 .expectError( CrediyaBadRequestException.class )
-                .verify();
-
-    }
-
-
-    @Test
-    @DisplayName("Must returned error if email is invalid")
-    void testSaveUserWithInvalidEmail() {
-
-        user.setEmail("georffrey");
-        when( userRepository.existByEmailAndDocument(user.getEmail(), user.getDocument()) ).thenReturn(Mono.just(false));
-
-        StepVerifier.create( userUseCase.saveUser(user) )
-                .expectError( CrediyaIllegalArgumentException.class )
-                .verify();
-
-    }
-
-    @Test
-    @DisplayName("Must returned error if document contains letters")
-    void testSaveUserWithDocumentContainsLetters() {
-
-        user.setDocument("1231asas");
-        when( userRepository.existByEmailAndDocument(user.getEmail(), user.getDocument()) ).thenReturn(Mono.just(false));
-
-
-        StepVerifier.create( userUseCase.saveUser(user) )
-                .expectError( CrediyaIllegalArgumentException.class )
                 .verify();
 
     }

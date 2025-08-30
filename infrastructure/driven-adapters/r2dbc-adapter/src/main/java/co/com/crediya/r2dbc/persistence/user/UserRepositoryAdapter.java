@@ -27,8 +27,8 @@ public class UserRepositoryAdapter extends ReactiveAdapterOperations<User, UserE
     }
 
     @Override
-    public Mono<Boolean> existByEmailAndDocument(String email, String document) {
-        return repository.existsByEmailAndDocument(email, document);
+    public Mono<Boolean> existByEmailOrDocument(String email, String document) {
+        return repository.existsByEmailOrDocument(email, document);
     }
 
     @Override
