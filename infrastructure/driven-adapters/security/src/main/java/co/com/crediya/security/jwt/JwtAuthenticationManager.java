@@ -22,8 +22,6 @@ public class JwtAuthenticationManager implements ReactiveAuthenticationManager {
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) {
 
-        log.info("Authenticating user Repo {}", authentication.getName());
-
         return Mono.just(authentication)
                 .flatMap( auth -> jwtProvider.validate(auth.getCredentials().toString()) )
                 .flatMap( claims ->
