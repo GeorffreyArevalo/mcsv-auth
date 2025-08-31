@@ -11,4 +11,6 @@ public class PathsConfig {
     private String usersById;
     private String usersByDocument;
 
+    private String authLogin;
+
 }

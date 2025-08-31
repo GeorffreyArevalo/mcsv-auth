@@ -19,7 +19,10 @@ public class User {
     private String email;
     private String document;
     private String phone;
+    private String password;
     private LocalDate dateOfBirth;
     private BigDecimal basePayment;
+
+    private Long idRole;
 
 }

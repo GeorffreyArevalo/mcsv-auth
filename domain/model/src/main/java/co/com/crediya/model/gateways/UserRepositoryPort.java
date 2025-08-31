@@ -11,4 +11,6 @@ public interface UserRepositoryPort {
 
     Mono<User> findByDocument(String document);
 
+    Mono<User> findByEmail(String email);
+
 }

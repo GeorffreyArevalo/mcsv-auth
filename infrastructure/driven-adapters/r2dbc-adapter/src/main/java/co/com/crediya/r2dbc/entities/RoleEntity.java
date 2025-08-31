@@ -7,27 +7,17 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
-@Table("users")
+@Table("roles")
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@Data
-public class UserEntity {
+@Builder(toBuilder = true)
+public class RoleEntity {
 
     @Id
     private Long id;
+    private String code;
     private String name;
-    private String lastName;
-    private String email;
-    private String document;
-    private String phone;
-    private String password;
-    private LocalDate dateOfBirth;
-    private BigDecimal basePayment;
-
-    private Long idRole;
+    private String description;
 
 }
