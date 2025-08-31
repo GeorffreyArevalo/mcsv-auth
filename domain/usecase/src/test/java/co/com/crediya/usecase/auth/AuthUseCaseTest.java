@@ -20,10 +20,9 @@ import reactor.test.StepVerifier;
 import java.math.BigDecimal;
 
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.any;
 
 @ExtendWith(MockitoExtension.class)
-public class AuthUseCaseTest {
+class AuthUseCaseTest {
 
     @Mock
     private UserRepositoryPort userRepositoryPort;
