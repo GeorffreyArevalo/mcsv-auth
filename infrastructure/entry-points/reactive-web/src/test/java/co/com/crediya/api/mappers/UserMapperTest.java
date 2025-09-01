@@ -23,6 +23,8 @@ class UserMapperTest {
             "10900122",
             "210012312",
             LocalDate.now(),
+            "1234",
+            "88612512",
             BigDecimal.TEN
     );
 
@@ -37,7 +39,7 @@ class UserMapperTest {
 
     @Test
     void testCreateRequestToModel() {
-        Mono<User> result = Mono.fromCallable(() -> userMapper.createRequestToModel(createUserRequestDTO));
+        Mono<User> result = Mono.fromCallable(() -> userMapper.createRequestToModel(createUserRequestDTO, 1L));
 
         StepVerifier.create(result)
                 .expectNextMatches( userResponse ->

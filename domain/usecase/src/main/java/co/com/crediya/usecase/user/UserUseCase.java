@@ -5,6 +5,7 @@ import co.com.crediya.model.User;
 import co.com.crediya.exceptions.enums.ExceptionMessages;
 import co.com.crediya.exceptions.CrediyaBadRequestException;
 import co.com.crediya.model.gateways.UserRepositoryPort;
+import co.com.crediya.port.PasswordEncoderPort;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
@@ -12,6 +13,7 @@ import reactor.core.publisher.Mono;
 public class UserUseCase {
 
     private final UserRepositoryPort userRepository;
+    private final PasswordEncoderPort passwordEncoderPort;
 
 
     public Mono<User> saveUser(User user) {
@@ -22,9 +24,11 @@ public class UserUseCase {
                     Mono.error(
                         new CrediyaBadRequestException(String.format(ExceptionMessages.USER_WITH_EMAIL_EXIST_OR_DOCUMENT.getMessage(),  user.getEmail(), user.getDocument()))
                     )
-                ).then(
-                    userRepository.saveUser(user)
-                );
+                ).then( Mono.just(user))
+                .flatMap( currentUser -> {
+                    currentUser.setPassword(passwordEncoderPort.encode(currentUser.getPassword()));
+                    return userRepository.saveUser(currentUser);
+                });
 
 
     }

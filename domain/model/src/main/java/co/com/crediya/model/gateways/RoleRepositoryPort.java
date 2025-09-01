@@ -6,5 +6,6 @@ import reactor.core.publisher.Mono;
 public interface RoleRepositoryPort {
 
     Mono<Role> findById(Long id);
+    Mono<Role> findByCode(String code);
 
 }

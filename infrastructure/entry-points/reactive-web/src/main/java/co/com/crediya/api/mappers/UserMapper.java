@@ -4,6 +4,7 @@ import co.com.crediya.api.dtos.user.CreateUserRequestDTO;
 import co.com.crediya.api.dtos.user.UserResponseDTO;
 import co.com.crediya.model.User;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(
@@ -13,7 +14,11 @@ import org.mapstruct.ReportingPolicy;
 )
 public interface UserMapper {
 
-    User createRequestToModel( CreateUserRequestDTO request );
+    @Mapping(
+            source = "idRole",
+            target = "idRole"
+    )
+    User createRequestToModel( CreateUserRequestDTO request, Long idRole );
 
     UserResponseDTO modelToResponse(User model );
 

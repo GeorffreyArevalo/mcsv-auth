@@ -7,6 +7,7 @@ import co.com.crediya.api.mappers.UserMapper;
 import co.com.crediya.api.util.HandlersResponseUtil;
 import co.com.crediya.api.util.ValidatorUtil;
 import co.com.crediya.exceptions.enums.ExceptionStatusCode;
+import co.com.crediya.usecase.role.RoleUseCase;
 import co.com.crediya.usecase.user.UserUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -31,6 +32,8 @@ import java.net.URI;
 public class UserHandler {
 
     private final UserUseCase userUseCase;
+    private final RoleUseCase roleUseCase;
+
     private final UserMapper userMapper;
     private final ValidatorUtil validatorUtil;
 
@@ -49,7 +52,10 @@ public class UserHandler {
         return serverRequest.bodyToMono(CreateUserRequestDTO.class)
                 .doOnNext( userRequest -> log.info("Saving user={}", userRequest))
                 .flatMap( validatorUtil::validate )
-                .map( userMapper::createRequestToModel )
+                .flatMap( createRole ->
+                    roleUseCase.findByCode(createRole.codeRole())
+                            .map( role -> userMapper.createRequestToModel(createRole, role.getId()))
+                )
                 .flatMap( userUseCase::saveUser )
                 .map( userMapper::modelToResponse )
                 .flatMap( savedUser ->

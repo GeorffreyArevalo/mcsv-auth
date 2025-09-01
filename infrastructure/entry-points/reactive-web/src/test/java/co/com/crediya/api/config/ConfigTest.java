@@ -6,6 +6,7 @@ import co.com.crediya.api.rest.user.UserHandler;
 import co.com.crediya.api.rest.user.UserRouterRest;
 import co.com.crediya.api.util.ValidatorUtil;
 import co.com.crediya.model.User;
+import co.com.crediya.usecase.role.RoleUseCase;
 import co.com.crediya.usecase.user.UserUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,9 @@ class ConfigTest {
 
     @MockitoBean
     private UserUseCase userUseCase;
+
+    @MockitoBean
+    private RoleUseCase roleUseCase;
 
 
     private final User user = User.builder().

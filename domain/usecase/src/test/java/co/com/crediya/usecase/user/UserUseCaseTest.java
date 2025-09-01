@@ -5,6 +5,7 @@ import co.com.crediya.exceptions.CrediyaBadRequestException;
 import co.com.crediya.exceptions.CrediyaResourceNotFoundException;
 import co.com.crediya.model.User;
 import co.com.crediya.model.gateways.UserRepositoryPort;
+import co.com.crediya.port.PasswordEncoderPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,9 @@ class UserUseCaseTest {
 
     @Mock
     private UserRepositoryPort userRepository;
+
+    @Mock
+    private PasswordEncoderPort passwordEncoderPort;
 
     @InjectMocks
     private UserUseCase userUseCase;
@@ -49,6 +53,7 @@ class UserUseCaseTest {
     void testSaveUser() {
 
         when( userRepository.existByEmailOrDocument(user.getEmail(), user.getDocument()) ).thenReturn(Mono.just(false));
+        when( passwordEncoderPort.encode(user.getPassword()) ).thenReturn("password");
         when( userRepository.saveUser(user) ).thenReturn(Mono.just(user));
 
         StepVerifier.create( userUseCase.saveUser(user) )
@@ -61,7 +66,6 @@ class UserUseCaseTest {
     void testSaveUserWithEmailOrDocumentAlreadyExists() {
 
         when( userRepository.existByEmailOrDocument(user.getEmail(), user.getDocument()) ).thenReturn(Mono.just(true));
-        when( userRepository.saveUser(user) ).thenReturn(Mono.just(user));
 
         StepVerifier.create( userUseCase.saveUser(user) )
                 .expectError( CrediyaBadRequestException.class )

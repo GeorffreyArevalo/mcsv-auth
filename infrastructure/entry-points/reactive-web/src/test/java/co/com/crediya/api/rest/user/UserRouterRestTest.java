@@ -7,7 +7,9 @@ import co.com.crediya.api.mappers.UserMapper;
 import co.com.crediya.api.util.HandlersResponseUtil;
 import co.com.crediya.api.util.ValidatorUtil;
 import co.com.crediya.exceptions.enums.ExceptionStatusCode;
+import co.com.crediya.model.Role;
 import co.com.crediya.model.User;
+import co.com.crediya.usecase.role.RoleUseCase;
 import co.com.crediya.usecase.user.UserUseCase;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -49,6 +51,9 @@ class UserRouterRestTest {
     @MockitoBean
     private UserUseCase userUseCase;
 
+    @MockitoBean
+    private RoleUseCase roleUseCase;
+
     @Autowired
     private PathsConfig pathsConfig;
 
@@ -69,6 +74,8 @@ class UserRouterRestTest {
             "10900122",
             "210012312",
             LocalDate.now(),
+            "12312",
+            "CodeRole",
             BigDecimal.TEN
     );
 
@@ -79,6 +86,8 @@ class UserRouterRestTest {
             "10900122",
             "210012312",
             LocalDate.now(),
+            "123123",
+            "CodeRole",
             BigDecimal.ZERO
     );
 
@@ -89,6 +98,8 @@ class UserRouterRestTest {
             .document("10900122")
             .phone("210012312")
             .basePayment(BigDecimal.TEN)
+            .idRole(1L)
+            .password("12312312")
             .build();
 
     private final User badUser = User.builder().
@@ -98,6 +109,13 @@ class UserRouterRestTest {
             .document("10900122")
             .phone("210012312")
             .basePayment(BigDecimal.TEN)
+            .build();
+
+    private final Role role = Role.builder()
+            .code("ADVISER")
+            .name("Asesor")
+            .description("Description")
+            .id(1L)
             .build();
 
     @Test
@@ -111,9 +129,10 @@ class UserRouterRestTest {
     @DisplayName("Must save a user successfully")
     void testListenSaveUser() {
 
+        when( roleUseCase.findByCode( createUserRequestDTO.codeRole() ) ).thenReturn(Mono.just(role));
         when( userUseCase.saveUser(user) ).thenReturn(Mono.just(user));
         when( userMapper.modelToResponse( any(User.class) ) ).thenReturn(userResponseDTO);
-        when( userMapper.createRequestToModel( any( CreateUserRequestDTO.class ) ) ).thenReturn( user );
+        when( userMapper.createRequestToModel( any( CreateUserRequestDTO.class ), any(Long.class) ) ).thenReturn( user );
 
         webTestClient.post()
                 .uri(USERS_PATH)
