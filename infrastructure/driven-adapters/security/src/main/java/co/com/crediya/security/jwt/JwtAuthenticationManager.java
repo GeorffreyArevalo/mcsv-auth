@@ -27,7 +27,7 @@ public class JwtAuthenticationManager implements ReactiveAuthenticationManager {
                 .flatMap( claims ->
                         Mono.just( new UsernamePasswordAuthenticationToken(
                             claims.getSubject(), null,
-                            List.of(new SimpleGrantedAuthority(claims.get("role", String.class)))
+                            List.of(new SimpleGrantedAuthority("ROLE_"+claims.get("role", String.class)))
                         ))
                 );
     }

@@ -20,9 +20,6 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtProvider implements TokenProviderPort {
 
-    @Value("${security.jwt.secret}")
-    private String secret;
-
     @Value("${security.jwt.expiration}")
     private Integer expiration;
 
@@ -31,21 +28,21 @@ public class JwtProvider implements TokenProviderPort {
     public Mono<Token> generateAccessToken(String email, String role) {
 
         return keysUtil.loadPrivateKey()
-                        .map( privateKey ->
-                            Token.builder()
-                                .email(email)
-                                .typeToken("Bearer")
-                                .accessToken(
-                                    Jwts.builder()
-                                        .subject(email)
-                                        .claim("role", role)
-                                        .issuedAt(new Date())
-                                        .expiration(new Date(System.currentTimeMillis() + expiration))
-                                        .signWith( privateKey, Jwts.SIG.RS256 )
-                                        .compact()
-                                ).build()
-                        );
-
+            .map( privateKey ->
+                Token.builder()
+                    .email(email)
+                    .typeToken("Bearer")
+                    .accessToken(
+                        Jwts.builder()
+                            .subject(email)
+                            .claim("role", role)
+                            .claim("scope", role)
+                            .issuedAt(new Date())
+                            .expiration(new Date(System.currentTimeMillis() + expiration))
+                            .signWith( privateKey, Jwts.SIG.RS256 )
+                            .compact()
+                    ).build()
+            );
     }
 
     public Mono<Claims> validate(String token) {

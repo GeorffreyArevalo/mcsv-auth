@@ -43,7 +43,6 @@ springdoc:
 
 security:
   jwt:
-    secret: a3pDQssFbU/UdfkZULJrS71CcvX+OBCYsHFWyg+6bDTUP9fXlIh6CdcOqVt7At+1/e4JvxJSqlY5W2L5KrawXQ==
     expiration: 3600000
     public-key-location: classpath:key/public.pem
     private-key-location: classpath:key/private.pem
