@@ -19,11 +19,11 @@ public class UserUseCase {
         return userRepository.existByEmailOrDocument(user.getEmail(), user.getDocument())
                 .filter( exists -> !exists )
                 .switchIfEmpty(
-                        Mono.error(
-                                new CrediyaBadRequestException(String.format(ExceptionMessages.USER_WITH_EMAIL_EXIST_OR_DOCUMENT.getMessage(),  user.getEmail(), user.getDocument()))
-                        )
+                    Mono.error(
+                        new CrediyaBadRequestException(String.format(ExceptionMessages.USER_WITH_EMAIL_EXIST_OR_DOCUMENT.getMessage(),  user.getEmail(), user.getDocument()))
+                    )
                 ).then(
-                        userRepository.saveUser(user)
+                    userRepository.saveUser(user)
                 );
 
 
@@ -33,8 +33,7 @@ public class UserUseCase {
     public Mono<User> findUserByDocument(String document) {
         return userRepository.findByDocument(document)
                 .switchIfEmpty( Mono.error(() -> new CrediyaResourceNotFoundException(
-                            String.format(ExceptionMessages.USER_WITH_DOCUMENT_NOT_EXIST.getMessage(),  document )
-                        )
-                ));
+                    String.format(ExceptionMessages.USER_WITH_DOCUMENT_NOT_EXIST.getMessage(),  document )
+                )));
     }
 }

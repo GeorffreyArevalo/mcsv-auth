@@ -1,5 +1,6 @@
 package co.com.crediya.security.jwt;
 
+import co.com.crediya.security.enums.SecurityConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
@@ -27,7 +28,7 @@ public class JwtAuthenticationManager implements ReactiveAuthenticationManager {
                 .flatMap( claims ->
                         Mono.just( new UsernamePasswordAuthenticationToken(
                             claims.getSubject(), null,
-                            List.of(new SimpleGrantedAuthority("ROLE_"+claims.get("role", String.class)))
+                            List.of(new SimpleGrantedAuthority(SecurityConstants.PREFIX_ROLE_AUTH.getValue() + claims.get(SecurityConstants.ROLE_CLAIM.getValue(), String.class)))
                         ))
                 );
     }

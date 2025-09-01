@@ -1,6 +1,7 @@
 package co.com.crediya.security.util;
 
 import co.com.crediya.exceptions.CrediyaUnathorizedException;
+import co.com.crediya.security.enums.SecurityConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -27,12 +28,12 @@ public class KeysUtil {
     public Mono<PrivateKey> loadPrivateKey() {
         return  Mono.fromCallable( () -> {
                     String key = new String( resourcePrivateKey.getInputStream().readAllBytes() )
-                        .replaceAll("-----\\w+ PRIVATE KEY-----", "")
-                        .replaceAll("\\s", "");
+                        .replaceAll(SecurityConstants.REGEX_START_END_PRIVATE_KEY.getValue(), "")
+                        .replaceAll(SecurityConstants.REGEX_SPACES.getValue(), "");
 
                     byte[] decoded = Base64.getDecoder().decode(key);
                     PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(decoded);
-                    return KeyFactory.getInstance("RSA").generatePrivate(spec);
+                    return KeyFactory.getInstance(SecurityConstants.TYPE_ALGORITHM.getValue()).generatePrivate(spec);
                 })
                 .onErrorResume( error -> Mono.error(new CrediyaUnathorizedException(error.getMessage())) );
     }
@@ -40,12 +41,12 @@ public class KeysUtil {
     public Mono<PublicKey> loadPublicKey() {
         return  Mono.fromCallable( () -> {
                     String key = new String( resourcePublicKey.getInputStream().readAllBytes() )
-                            .replaceAll("-----\\w+ PUBLIC KEY-----", "")
-                            .replaceAll("\\s", "");
+                            .replaceAll(SecurityConstants.REGEX_START_END_PUBLIC_KEY.getValue(), "")
+                            .replaceAll(SecurityConstants.REGEX_SPACES.getValue(), "");
 
                     byte[] decoded = Base64.getDecoder().decode(key);
                     X509EncodedKeySpec spec = new X509EncodedKeySpec(decoded);
-                    return KeyFactory.getInstance("RSA").generatePublic(spec);
+                    return KeyFactory.getInstance(SecurityConstants.TYPE_ALGORITHM.getValue()).generatePublic(spec);
                 })
                 .onErrorResume( error -> Mono.error(new CrediyaUnathorizedException(error.getMessage())) );
     }

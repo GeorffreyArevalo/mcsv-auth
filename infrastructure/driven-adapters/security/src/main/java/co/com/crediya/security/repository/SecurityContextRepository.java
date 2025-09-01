@@ -1,5 +1,6 @@
 package co.com.crediya.security.repository;
 
+import co.com.crediya.security.enums.SecurityConstants;
 import co.com.crediya.security.jwt.JwtAuthenticationManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,7 +26,7 @@ public class SecurityContextRepository implements ServerSecurityContextRepositor
 
     @Override
     public Mono<SecurityContext> load(ServerWebExchange exchange) {
-        return Mono.justOrEmpty(Optional.ofNullable(exchange.getAttribute("token")))
+        return Mono.justOrEmpty(Optional.ofNullable(exchange.getAttribute(SecurityConstants.TOKEN_CLAIM.getValue())))
                 .flatMap( token -> jwtAuthenticationManager.authenticate(
                         new UsernamePasswordAuthenticationToken(token, token)
                 )).map(SecurityContextImpl::new);

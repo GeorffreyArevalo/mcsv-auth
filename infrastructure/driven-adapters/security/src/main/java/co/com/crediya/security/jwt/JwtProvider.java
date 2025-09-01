@@ -4,6 +4,7 @@ import co.com.crediya.exceptions.CrediyaUnathorizedException;
 import co.com.crediya.exceptions.enums.ExceptionMessages;
 import co.com.crediya.model.Token;
 import co.com.crediya.port.TokenProviderPort;
+import co.com.crediya.security.enums.SecurityConstants;
 import co.com.crediya.security.util.KeysUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -31,12 +32,12 @@ public class JwtProvider implements TokenProviderPort {
             .map( privateKey ->
                 Token.builder()
                     .email(email)
-                    .typeToken("Bearer")
+                    .typeToken(SecurityConstants.TYPE_TOKEN.getValue())
                     .accessToken(
                         Jwts.builder()
                             .subject(email)
-                            .claim("role", role)
-                            .claim("scope", role)
+                            .claim(SecurityConstants.ROLE_CLAIM.getValue(), role)
+                            .claim(SecurityConstants.SCOPE_CLAIM.getValue(), role)
                             .issuedAt(new Date())
                             .expiration(new Date(System.currentTimeMillis() + expiration))
                             .signWith( privateKey, Jwts.SIG.RS256 )
