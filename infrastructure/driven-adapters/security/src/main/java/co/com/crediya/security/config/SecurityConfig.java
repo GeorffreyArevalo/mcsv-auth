@@ -1,5 +1,7 @@
 package co.com.crediya.security.config;
 
+import co.com.crediya.security.exceptions.handler.AccessDeniedExceptionHandler;
+import co.com.crediya.security.exceptions.handler.UnauthorizedExceptionHandler;
 import co.com.crediya.security.jwt.JwtFilter;
 import co.com.crediya.security.repository.SecurityContextRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,9 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 public class SecurityConfig {
 
         private final SecurityContextRepository securityContextRepository;
+        private final UnauthorizedExceptionHandler unauthorizedExceptionHandler;
+        private final AccessDeniedExceptionHandler accessDeniedExceptionHandler;
+
 
         @Bean
         public PasswordEncoder passwordEncoder() {
@@ -40,6 +45,10 @@ public class SecurityConfig {
                     .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                     .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
                     .logout(ServerHttpSecurity.LogoutSpec::disable)
+                    .exceptionHandling( exceptionHandlingSpec ->
+                        exceptionHandlingSpec.accessDeniedHandler(accessDeniedExceptionHandler)
+                                .authenticationEntryPoint(unauthorizedExceptionHandler)
+                    )
                     .build();
 
         }

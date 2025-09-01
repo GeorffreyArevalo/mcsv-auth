@@ -8,6 +8,7 @@ public enum ExceptionStatusCode {
     CREATED("201-CR"),
     INTERNAL_SERVER_ERROR("500-ISE"),
     UNAUTHORIZED_INVALID_TOKEN("401-UA-IT"),
+    FORBIDDEN("403-FB"),
     OK("200-OK");
 
     private final String statusCode;
