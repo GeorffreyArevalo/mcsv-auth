@@ -27,8 +27,8 @@ class JwtAuthenticationManagerTest {
     }
 
     @Test
-    void authenticate_withValidToken_shouldReturnAuthentication() {
-        // Arrange
+    void authenticateWithValidTokenShouldReturnAuthentication() {
+
         String token = "valid-token";
         Claims claims = Mockito.mock(Claims.class);
 
@@ -39,7 +39,6 @@ class JwtAuthenticationManagerTest {
         Authentication authRequest =
                 new UsernamePasswordAuthenticationToken("testUser", token);
 
-        // Act & Assert
         StepVerifier.create(jwtAuthenticationManager.authenticate(authRequest))
                 .expectNextMatches(auth -> {
                     UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) auth;
@@ -54,8 +53,8 @@ class JwtAuthenticationManagerTest {
     }
 
     @Test
-    void authenticate_withInvalidToken_shouldReturnError() {
-        // Arrange
+    void authenticateWithInvalidTokenShouldReturnError() {
+
         String token = "invalid-token";
 
         when(jwtProvider.validate(anyString())).thenReturn(Mono.error(new RuntimeException("Invalid token")));
@@ -63,7 +62,6 @@ class JwtAuthenticationManagerTest {
         Authentication authRequest =
                 new UsernamePasswordAuthenticationToken("testUser", token);
 
-        // Act & Assert
         StepVerifier.create(jwtAuthenticationManager.authenticate(authRequest))
                 .expectErrorMatches(throwable ->
                         throwable instanceof RuntimeException &&
