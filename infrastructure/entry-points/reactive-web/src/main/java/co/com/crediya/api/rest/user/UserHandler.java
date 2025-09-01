@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -38,7 +39,9 @@ public class UserHandler {
     @Operation( tags = "Users", operationId = "saveUser", description = "Save a user", summary = "Save a user",
             requestBody = @RequestBody( content = @Content( schema = @Schema( implementation = CreateUserRequestDTO.class ) ) ),
             responses = { @ApiResponse( responseCode = "201", description = "User saved successfully.", content = @Content( schema = @Schema( implementation = UserResponseDTO.class ) ) ),
-                    @ApiResponse( responseCode = "400", description = "Request body is not valid.", content = @Content( schema = @Schema( implementation = CrediyaResponseDTO.class ) ) )
+                    @ApiResponse( responseCode = "400", description = "Request body is not valid.", content = @Content( schema = @Schema( implementation = CrediyaResponseDTO.class ) ) ),
+                    @ApiResponse( responseCode = "401", description = "Unauthorized.", content = @Content( schema = @Schema( implementation = CrediyaResponseDTO.class ) ) ),
+                    @ApiResponse( responseCode = "403", description = "Access Denied.", content = @Content( schema = @Schema( implementation = CrediyaResponseDTO.class ) ) )
             }
     )
     public Mono<ServerResponse> listenSaveUser(ServerRequest serverRequest) {
@@ -60,10 +63,12 @@ public class UserHandler {
 
     @Operation( tags = "Users", operationId = "findUserByDocument", description = "Find a user by document", summary = "Find a user by document",
             parameters = {
-                    @Parameter( in = ParameterIn.PATH, name = "document", description = "User document", required = true, example = "1200812" )
+                    @Parameter( in = ParameterIn.PATH, name = "document", description = "User document", required = true, example = "1200812" ),
             },
             responses = { @ApiResponse( responseCode = "200", description = "User found.", content = @Content( schema = @Schema( implementation = UserResponseDTO.class ) ) ),
-                    @ApiResponse( responseCode = "404", description = "User with document not found.", content = @Content( schema = @Schema( implementation = CrediyaResponseDTO.class ) ) )
+                    @ApiResponse( responseCode = "404", description = "User with document not found.", content = @Content( schema = @Schema( implementation = CrediyaResponseDTO.class ) ) ),
+                    @ApiResponse( responseCode = "401", description = "Unauthorized.", content = @Content( schema = @Schema( implementation = CrediyaResponseDTO.class ) ) ),
+                    @ApiResponse( responseCode = "403", description = "Access Denied.", content = @Content( schema = @Schema( implementation = CrediyaResponseDTO.class ) ) )
             }
     )
     public Mono<ServerResponse> listenFindUserByDocument(ServerRequest serverRequest) {

@@ -2,8 +2,12 @@ package co.com.crediya.api.rest.auth;
 
 import co.com.crediya.api.config.PathsConfig;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.RouterOperation;
+import org.springdoc.core.annotations.RouterOperations;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
@@ -16,7 +20,11 @@ public class AuthRouterRest {
 
     private final PathsConfig pathsConfig;
 
+
     @Bean
+    @RouterOperations({
+            @RouterOperation(path = "/api/v1/login", produces = {MediaType.APPLICATION_JSON_VALUE,}, method = RequestMethod.POST, beanClass = AuthHandler.class, beanMethod = "listenLogin")
+    })
     public RouterFunction<ServerResponse> authRouterFunction( AuthHandler handler ) {
         return route( POST( pathsConfig.getAuthLogin()), handler::listenLogin );
     }

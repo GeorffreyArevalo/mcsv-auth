@@ -36,7 +36,11 @@ public class SecurityConfig {
             return http
                     .csrf(ServerHttpSecurity.CsrfSpec::disable)
                     .authorizeExchange( specExchange ->
-                        specExchange.pathMatchers( HttpMethod.POST, "/api/v1/auth/login").permitAll()
+                        specExchange
+                                .pathMatchers(
+                                        "/openapi/**"
+                                ).permitAll()
+                                .pathMatchers( HttpMethod.POST, "/api/v1/auth/login").permitAll()
                                 .pathMatchers( HttpMethod.POST, "/api/v1/users").hasAnyRole("ADMIN", "ADVISER")
                                 .anyExchange().authenticated()
                     )

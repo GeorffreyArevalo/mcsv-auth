@@ -23,8 +23,8 @@ public class UserRouterRest {
 
     @Bean
     @RouterOperations({
-            @RouterOperation(path = "/api/v1/users", produces = {MediaType.APPLICATION_JSON_VALUE,}, method = RequestMethod.POST, beanClass = UserHandler.class, beanMethod = "listenSaveUser"),
-            @RouterOperation(path = "/api/v1/users/byDocument/{document}", produces = { MediaType.APPLICATION_JSON_VALUE, }, method = RequestMethod.GET, beanClass = UserHandler.class, beanMethod = "listenFindUserByDocument")
+            @RouterOperation(path = "/api/v1/users", headers = {"Authorization"}, produces = {MediaType.APPLICATION_JSON_VALUE,}, method = RequestMethod.POST, beanClass = UserHandler.class, beanMethod = "listenSaveUser"),
+            @RouterOperation(path = "/api/v1/users/byDocument/{document}", headers = {"Authorization"}, produces = { MediaType.APPLICATION_JSON_VALUE, }, method = RequestMethod.GET, beanClass = UserHandler.class, beanMethod = "listenFindUserByDocument")
     })
     public RouterFunction<ServerResponse> userRouterFunction(UserHandler handler) {
         return route(POST(pathsConfig.getUsers()), handler::listenSaveUser)

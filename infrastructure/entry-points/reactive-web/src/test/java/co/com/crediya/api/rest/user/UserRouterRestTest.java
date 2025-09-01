@@ -131,7 +131,7 @@ class UserRouterRestTest {
     }
 
     @Test
-    @DisplayName("Must save a user successfully")
+    @DisplayName("Must save a user with error")
     void testListenSaveUserWithError() {
 
         when( userUseCase.saveUser(user) ).thenReturn(Mono.just(user));

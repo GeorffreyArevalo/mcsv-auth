@@ -22,7 +22,9 @@ public class JwtFilter implements WebFilter {
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
 
         return Mono.just( exchange.getRequest() )
-                .filter( request -> !request.getURI().getPath().equals("/api/v1/auth/login") )
+                .filter( request ->
+                        !request.getURI().getPath().equals("/api/v1/auth/login")  && !request.getURI().getPath().startsWith("/openapi/")
+                )
                 .switchIfEmpty(chain.filter(exchange).then(Mono.empty()))
                 .filter( request -> Objects.nonNull(request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION)))
                 .switchIfEmpty( Mono.error(new CrediyaUnathorizedException(ExceptionMessages.UNAUTHORIZED_SENT_TOKEN_INVALID.getMessage())) )

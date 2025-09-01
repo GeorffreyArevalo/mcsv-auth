@@ -10,7 +10,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -21,10 +20,9 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtProvider implements TokenProviderPort {
 
-    @Value("${security.jwt.expiration}")
-    private Integer expiration;
-
     private final KeysUtil keysUtil;
+
+    private final Integer expiration;
 
     public Mono<Token> generateAccessToken(String email, String role) {
 
