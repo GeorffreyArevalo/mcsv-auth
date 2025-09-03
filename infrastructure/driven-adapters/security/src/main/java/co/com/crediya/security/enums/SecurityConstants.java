@@ -11,7 +11,7 @@ public enum SecurityConstants {
     TYPE_TOKEN("Bearer"),
     REGEX_TYPE_TOKEN("Bearer "),
     ROLE_CLAIM("role"),
-    SCOPE_CLAIM("scope"),
+    PERMISSIONS_CLAIM("permissions"),
     PREFIX_ROLE_AUTH("ROLE_"),
     TOKEN_CLAIM("token"),
     REGEX_SPACES("\\s");

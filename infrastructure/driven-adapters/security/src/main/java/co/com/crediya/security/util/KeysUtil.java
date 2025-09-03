@@ -1,6 +1,6 @@
 package co.com.crediya.security.util;
 
-import co.com.crediya.exceptions.CrediyaUnathorizedException;
+import co.com.crediya.exceptions.CrediyaInternalServerErrorException;
 import co.com.crediya.security.enums.SecurityConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,7 @@ public class KeysUtil {
                     PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(decoded);
                     return KeyFactory.getInstance(SecurityConstants.TYPE_ALGORITHM.getValue()).generatePrivate(spec);
                 })
-                .onErrorResume( error -> Mono.error(new CrediyaUnathorizedException(error.getMessage())) );
+                .onErrorResume( error -> Mono.error(new CrediyaInternalServerErrorException(error.getMessage())) );
     }
 
     public Mono<PublicKey> loadPublicKey() {
@@ -47,7 +47,7 @@ public class KeysUtil {
                     X509EncodedKeySpec spec = new X509EncodedKeySpec(decoded);
                     return KeyFactory.getInstance(SecurityConstants.TYPE_ALGORITHM.getValue()).generatePublic(spec);
                 })
-                .onErrorResume( error -> Mono.error(new CrediyaUnathorizedException(error.getMessage())) );
+                .onErrorResume( error -> Mono.error(new CrediyaInternalServerErrorException(error.getMessage())) );
     }
 
 

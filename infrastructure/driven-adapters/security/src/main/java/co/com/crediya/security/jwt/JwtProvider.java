@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.util.Date;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -24,7 +25,7 @@ public class JwtProvider implements TokenProviderPort {
 
     private final Integer expiration;
 
-    public Mono<Token> generateAccessToken(String email, String role) {
+    public Mono<Token> generateAccessToken(String email, String role, List<String> permissions) {
 
         return keysUtil.loadPrivateKey()
             .map( privateKey ->
@@ -35,7 +36,7 @@ public class JwtProvider implements TokenProviderPort {
                         Jwts.builder()
                             .subject(email)
                             .claim(SecurityConstants.ROLE_CLAIM.getValue(), role)
-                            .claim(SecurityConstants.SCOPE_CLAIM.getValue(), role)
+                            .claim(SecurityConstants.PERMISSIONS_CLAIM.getValue(), permissions)
                             .issuedAt(new Date())
                             .expiration(new Date(System.currentTimeMillis() + expiration))
                             .signWith( privateKey, Jwts.SIG.RS256 )

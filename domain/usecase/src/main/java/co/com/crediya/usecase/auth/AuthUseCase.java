@@ -3,6 +3,7 @@ package co.com.crediya.usecase.auth;
 import co.com.crediya.exceptions.CrediyaUnathorizedException;
 import co.com.crediya.exceptions.enums.ExceptionMessages;
 import co.com.crediya.model.Token;
+import co.com.crediya.model.gateways.EndpointRepositoryPort;
 import co.com.crediya.model.gateways.RoleRepositoryPort;
 import co.com.crediya.model.gateways.UserRepositoryPort;
 import co.com.crediya.port.PasswordEncoderPort;
@@ -15,6 +16,7 @@ public class AuthUseCase {
 
     private final UserRepositoryPort userRepositoryPort;
     private final RoleRepositoryPort roleRepositoryPort;
+    private final EndpointRepositoryPort endpointRepositoryPort;
 
     private final TokenProviderPort tokenProviderPort;
     private final PasswordEncoderPort passwordEncoderPort;
@@ -23,15 +25,18 @@ public class AuthUseCase {
 
         return userRepositoryPort.findByEmail(email)
                 .switchIfEmpty(
-                        Mono.error( new CrediyaUnathorizedException(ExceptionMessages.INVALID_CREDENTIALS.getMessage()))
+                    Mono.error( new CrediyaUnathorizedException(ExceptionMessages.INVALID_CREDENTIALS.getMessage()))
                 )
                 .filter(user -> passwordEncoderPort.verify(password, user.getPassword()))
                 .switchIfEmpty(
-                        Mono.error( new CrediyaUnathorizedException(ExceptionMessages.INVALID_CREDENTIALS.getMessage()))
+                    Mono.error( new CrediyaUnathorizedException(ExceptionMessages.INVALID_CREDENTIALS.getMessage()))
                 )
-                .flatMap( user ->
-                    roleRepositoryPort.findById(user.getIdRole())
-                            .flatMap( role ->  tokenProviderPort.generateAccessToken(user.getEmail(), role.getCode()))
+                .flatMap( user -> roleRepositoryPort.findById(user.getIdRole()) )
+                .flatMap( role ->
+                    endpointRepositoryPort.findByRoleCode(role.getCode())
+                    .map( endpoint -> String.format("%s:%s", endpoint.getMethod(), endpoint.getPath()) )
+                    .collectList()
+                    .flatMap( permissions -> tokenProviderPort.generateAccessToken(email, role.getCode(), permissions) )
                 );
     }
 }
