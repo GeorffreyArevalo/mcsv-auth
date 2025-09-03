@@ -21,6 +21,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.List;
 
 import static org.mockito.Mockito.when;
 
@@ -56,7 +57,7 @@ class JwtProviderTest {
         when(keysUtil.loadPrivateKey()).thenReturn(Mono.just(privateKey));
 
 
-        Mono<Token> tokenMono = jwtProvider.generateAccessToken(email, role);
+        Mono<Token> tokenMono = jwtProvider.generateAccessToken(email, role, List.of());
 
         StepVerifier.create(tokenMono)
                 .expectNextMatches(token -> token.getEmail().equals(email))

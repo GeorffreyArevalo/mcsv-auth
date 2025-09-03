@@ -4,6 +4,7 @@ import co.com.crediya.exceptions.CrediyaUnathorizedException;
 import co.com.crediya.model.Role;
 import co.com.crediya.model.Token;
 import co.com.crediya.model.User;
+import co.com.crediya.model.gateways.EndpointRepositoryPort;
 import co.com.crediya.model.gateways.RoleRepositoryPort;
 import co.com.crediya.model.gateways.UserRepositoryPort;
 import co.com.crediya.port.PasswordEncoderPort;
@@ -14,10 +15,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.mockito.Mockito.when;
 
@@ -32,6 +35,9 @@ class AuthUseCaseTest {
 
     @Mock
     private TokenProviderPort tokenProviderPort;
+
+    @Mock
+    private EndpointRepositoryPort endpointRepositoryPort;
 
     @Mock
     private PasswordEncoderPort passwordEncoderPort;
@@ -69,7 +75,8 @@ class AuthUseCaseTest {
 
         when( userRepositoryPort.findByEmail(user.getEmail()) ).thenReturn( Mono.just(user) );
         when( roleRepositoryPort.findById( user.getIdRole() ) ).thenReturn( Mono.just(role) );
-        when( tokenProviderPort.generateAccessToken(user.getEmail(), role.getCode() ) ).thenReturn(Mono.just(token));
+        when( endpointRepositoryPort.findByRoleCode(role.getCode()) ).thenReturn( Flux.empty() );
+        when( tokenProviderPort.generateAccessToken(user.getEmail(), role.getCode(), List.of() ) ).thenReturn(Mono.just(token));
         when( passwordEncoderPort.verify(user.getPassword(), user.getPassword()) ).thenReturn(Boolean.valueOf("true"));
 
         Mono<Token> tokenLogin = authUseCase.login(user.getEmail(), user.getPassword());
