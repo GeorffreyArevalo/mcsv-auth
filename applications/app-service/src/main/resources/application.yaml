@@ -31,15 +31,17 @@ routes:
     usersById: "/api/v1/users/{id}"
     usersByDocument: "/api/v1/users/byDocument/{document}"
     authLogin: "/api/v1/auth/login"
-
+    rolaHasPermission: "/api/v1/auth/roleHasPermission"
 
 springdoc:
   swagger-ui:
-    path: /openapi/swagger-ui.html
+    path: /openapi/swagger-ui
   api-docs:
     path: /openapi/v3/api-docs
-  packages-to-scan: co.com.crediya
-  paths-to-match: /**
+  packages-to-scan:
+    - co.com.crediya
+  paths-to-match:
+    - /**
 
 security:
   jwt:

@@ -6,7 +6,7 @@ import co.com.crediya.r2dbc.entities.EndpointEntity;
 import co.com.crediya.r2dbc.helper.ReactiveAdapterOperations;
 import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 
 @Repository
@@ -17,7 +17,7 @@ public class EndpointRepositoryAdapter extends ReactiveAdapterOperations<Endpoin
     }
 
     @Override
-    public Flux<Endpoint> findByRoleCode(String code) {
-        return repository.findByRoleCode(code).map( super::toEntity );
+    public Mono<Boolean> existsEndpointByCodeRoleAndPathAntMethod(String code, String path, String method) {
+        return repository.existsEndpointByRoleCodeAndPathAndMethod(code,  path, method);
     }
 }

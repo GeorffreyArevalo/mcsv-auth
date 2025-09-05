@@ -16,10 +16,10 @@ public class AuthUseCase {
 
     private final UserRepositoryPort userRepositoryPort;
     private final RoleRepositoryPort roleRepositoryPort;
-    private final EndpointRepositoryPort endpointRepositoryPort;
 
     private final TokenProviderPort tokenProviderPort;
     private final PasswordEncoderPort passwordEncoderPort;
+    private final EndpointRepositoryPort endpointRepositoryPort;
 
     public Mono<Token> login(String email, String password) {
 
@@ -32,11 +32,11 @@ public class AuthUseCase {
                     Mono.error( new CrediyaUnathorizedException(ExceptionMessages.INVALID_CREDENTIALS.getMessage()))
                 )
                 .flatMap( user -> roleRepositoryPort.findById(user.getIdRole()) )
-                .flatMap( role ->
-                    endpointRepositoryPort.findByRoleCode(role.getCode())
-                    .map( endpoint -> String.format("%s:%s", endpoint.getMethod(), endpoint.getPath()) )
-                    .collectList()
-                    .flatMap( permissions -> tokenProviderPort.generateAccessToken(email, role.getCode(), permissions) )
-                );
+                .flatMap( role -> tokenProviderPort.generateAccessToken(email, role.getCode()) );
     }
+
+    public Mono<Boolean> roleHasPermission(String roleCode, String path, String method) {
+        return endpointRepositoryPort.existsEndpointByCodeRoleAndPathAntMethod(roleCode, path, method);
+    }
+
 }

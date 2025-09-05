@@ -6,5 +6,5 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 public interface TokenProviderPort {
-    Mono<Token> generateAccessToken(String email, String role, List<String> permissions);
+    Mono<Token> generateAccessToken(String email, String role);
 }

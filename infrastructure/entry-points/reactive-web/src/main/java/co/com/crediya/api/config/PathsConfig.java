@@ -12,5 +12,6 @@ public class PathsConfig {
     private String usersByDocument;
 
     private String authLogin;
+    private String rolaHasPermission;
 
 }

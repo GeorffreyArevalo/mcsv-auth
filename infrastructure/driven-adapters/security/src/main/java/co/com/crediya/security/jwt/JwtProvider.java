@@ -25,7 +25,7 @@ public class JwtProvider implements TokenProviderPort {
 
     private final Integer expiration;
 
-    public Mono<Token> generateAccessToken(String email, String role, List<String> permissions) {
+    public Mono<Token> generateAccessToken(String email, String role) {
 
         return keysUtil.loadPrivateKey()
             .map( privateKey ->
@@ -36,7 +36,6 @@ public class JwtProvider implements TokenProviderPort {
                         Jwts.builder()
                             .subject(email)
                             .claim(SecurityConstants.ROLE_CLAIM.getValue(), role)
-                            .claim(SecurityConstants.PERMISSIONS_CLAIM.getValue(), permissions)
                             .issuedAt(new Date())
                             .expiration(new Date(System.currentTimeMillis() + expiration))
                             .signWith( privateKey, Jwts.SIG.RS256 )

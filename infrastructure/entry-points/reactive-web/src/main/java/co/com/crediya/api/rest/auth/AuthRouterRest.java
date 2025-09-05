@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
@@ -23,10 +24,12 @@ public class AuthRouterRest {
 
     @Bean
     @RouterOperations({
-            @RouterOperation(path = "/api/v1/login", produces = {MediaType.APPLICATION_JSON_VALUE,}, method = RequestMethod.POST, beanClass = AuthHandler.class, beanMethod = "listenLogin")
+            @RouterOperation(path = "/api/v1/login", produces = { MediaType.APPLICATION_JSON_VALUE  }, method = RequestMethod.POST, beanClass = AuthHandler.class, beanMethod = "listenLogin"),
+            @RouterOperation(path = "/api/v1/roleHasPermission", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET, beanClass = AuthHandler.class, beanMethod = "listenRoleHasPermissions")
     })
     public RouterFunction<ServerResponse> authRouterFunction( AuthHandler handler ) {
-        return route( POST( pathsConfig.getAuthLogin()), handler::listenLogin );
+        return route( POST( pathsConfig.getAuthLogin()), handler::listenLogin )
+                .andRoute(GET( pathsConfig.getRolaHasPermission()), handler::listenRoleHasPermissions );
     }
 
 }

@@ -7,6 +7,7 @@ import co.com.crediya.api.dtos.auth.TokenResponseDTO;
 import co.com.crediya.api.mappers.TokenMapper;
 import co.com.crediya.api.util.HandlersResponseUtil;
 import co.com.crediya.api.util.ValidatorUtil;
+import co.com.crediya.exceptions.CrediyaBadRequestException;
 import co.com.crediya.exceptions.enums.ExceptionStatusCode;
 import co.com.crediya.usecase.auth.AuthUseCase;
 import io.swagger.v3.oas.annotations.Operation;
@@ -52,6 +53,25 @@ public class AuthHandler {
                 );
 
 
+    }
+
+    @Operation( tags = "Auth", operationId = "roleHasPermissions", description = "Check if a role has permission to endpoint", summary = "Check if a role has permission to endpoint",
+            responses = { @ApiResponse( responseCode = "200", description = "Check successfully.", content = @Content( schema = @Schema( implementation = CrediyaResponseDTO.class ) ) ),
+                    @ApiResponse( responseCode = "401", description = "Unauthorized.", content = @Content( schema = @Schema( implementation = CrediyaResponseDTO.class ) ) )
+            }
+    )
+    public Mono<ServerResponse> listenRoleHasPermissions(ServerRequest serverRequest) {
+
+        String roleCode = serverRequest.queryParam("roleCode").orElseThrow( () -> new CrediyaBadRequestException("Role code is required in query params"));
+        String method = serverRequest.queryParam("method").orElseThrow( () -> new CrediyaBadRequestException("Method is required in query parmas"));
+        String path = serverRequest.queryParam("path").orElseThrow( () -> new CrediyaBadRequestException("Path is required in query params")); //Validar con jakarta
+
+        return authUseCase.roleHasPermission(roleCode, path, method)
+            .flatMap( exists ->
+                ServerResponse.ok()
+                    .contentType( MediaType.APPLICATION_JSON )
+                    .bodyValue( HandlersResponseUtil.buildBodySuccessResponse(ExceptionStatusCode.OK.status(), exists) )
+            );
     }
 
 

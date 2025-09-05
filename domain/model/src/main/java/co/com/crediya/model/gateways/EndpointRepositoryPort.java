@@ -1,10 +1,9 @@
 package co.com.crediya.model.gateways;
 
-import co.com.crediya.model.Endpoint;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface EndpointRepositoryPort {
 
-    Flux<Endpoint> findByRoleCode(String code);
+    Mono<Boolean> existsEndpointByCodeRoleAndPathAntMethod(String code, String path, String method);
 
 }
