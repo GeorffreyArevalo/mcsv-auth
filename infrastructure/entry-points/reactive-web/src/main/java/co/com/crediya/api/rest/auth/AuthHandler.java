@@ -4,6 +4,7 @@ package co.com.crediya.api.rest.auth;
 import co.com.crediya.api.dtos.CrediyaResponseDTO;
 import co.com.crediya.api.dtos.auth.LoginRequestDTO;
 import co.com.crediya.api.dtos.auth.TokenResponseDTO;
+import co.com.crediya.api.mappers.SearchParamsMapper;
 import co.com.crediya.api.mappers.TokenMapper;
 import co.com.crediya.api.util.HandlersResponseUtil;
 import co.com.crediya.api.util.ValidatorUtil;
@@ -32,6 +33,7 @@ public class AuthHandler {
     private final ValidatorUtil validatorUtil;
     private final TokenMapper tokenMapper;
 
+    private final SearchParamsMapper searchParamsMapper;
 
     @Operation( tags = "Auth", operationId = "login", description = "Login in application", summary = "Login in application",
             requestBody = @RequestBody( content = @Content( schema = @Schema( implementation = LoginRequestDTO.class ) ) ),
@@ -62,11 +64,11 @@ public class AuthHandler {
     )
     public Mono<ServerResponse> listenRoleHasPermissions(ServerRequest serverRequest) {
 
-        String roleCode = serverRequest.queryParam("roleCode").orElseThrow( () -> new CrediyaBadRequestException("Role code is required in query params"));
-        String method = serverRequest.queryParam("method").orElseThrow( () -> new CrediyaBadRequestException("Method is required in query parmas"));
-        String path = serverRequest.queryParam("path").orElseThrow( () -> new CrediyaBadRequestException("Path is required in query params")); //Validar con jakarta
 
-        return authUseCase.roleHasPermission(roleCode, path, method)
+        return Mono.just(serverRequest.queryParams())
+            .map(searchParamsMapper::queryParamsToCheckRolePermissionDTO)
+            .flatMap(validatorUtil::validate)
+            .flatMap( searchParams -> authUseCase.roleHasPermission(searchParams.roleCode(), searchParams.path(), searchParams.method()) )
             .flatMap( exists ->
                 ServerResponse.ok()
                     .contentType( MediaType.APPLICATION_JSON )
