@@ -20,13 +20,13 @@ import java.util.Base64;
 @RequiredArgsConstructor
 public class KeysUtil {
 
-    private final Resource resourcePrivateKey;
+    private final String resourcePrivateKey;
 
-    private final Resource resourcePublicKey;
+    private final String resourcePublicKey;
 
     public Mono<PrivateKey> loadPrivateKey() {
         return  Mono.fromCallable( () -> {
-                    String key = new String( resourcePrivateKey.getInputStream().readAllBytes() )
+                    String key = resourcePrivateKey
                         .replaceAll(SecurityConstants.REGEX_START_END_PRIVATE_KEY.getValue(), "")
                         .replaceAll(SecurityConstants.REGEX_SPACES.getValue(), "");
 
@@ -39,7 +39,7 @@ public class KeysUtil {
 
     public Mono<PublicKey> loadPublicKey() {
         return  Mono.fromCallable( () -> {
-                    String key = new String( resourcePublicKey.getInputStream().readAllBytes() )
+                    String key = resourcePublicKey
                             .replaceAll(SecurityConstants.REGEX_START_END_PUBLIC_KEY.getValue(), "")
                             .replaceAll(SecurityConstants.REGEX_SPACES.getValue(), "");
 

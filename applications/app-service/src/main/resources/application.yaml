@@ -9,9 +9,12 @@ spring:
     include: null
 
   r2dbc:
-    url: "r2dbc:mysql://localhost:3306/auth?allowPublicKeyRetrieval=true&useSSL=false"
-    username: "user"
-    password: 1234
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  config:
+    import: aws-secretsmanager:crediya/auth
 
 management:
   endpoints:
@@ -23,7 +26,7 @@ management:
       probes:
         enabled: true
 cors:
-  allowed-origins: "http://localhost:4200,http://localhost:8080"
+  allowed-origins: ${ALLOWED_ORIGINS}
 
 routes:
   paths:
@@ -45,9 +48,9 @@ springdoc:
 
 security:
   jwt:
-    expiration: 3600000
-    public-key-location: classpath:key/public.pem
-    private-key-location: classpath:key/private.pem
+    expiration: ${JWT_EXPIRATION}
+    public-key-location: ${JWT_PUBLIC_KEY}
+    private-key-location: ${JWT_SECRET_KEY}
 
 
 

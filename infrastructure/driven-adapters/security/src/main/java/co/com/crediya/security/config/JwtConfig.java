@@ -5,7 +5,6 @@ import co.com.crediya.security.util.KeysUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.Resource;
 
 @Configuration
 public class JwtConfig {
@@ -14,10 +13,10 @@ public class JwtConfig {
     private Integer expiration;
 
     @Value("${security.jwt.private-key-location}")
-    private Resource resourcePrivateKey;
+    private String resourcePrivateKey;
 
     @Value("${security.jwt.public-key-location}")
-    private Resource resourcePublicKey;
+    private String resourcePublicKey;
 
     @Bean
     public JwtProvider jwtProvider(KeysUtil keysUtil) {
