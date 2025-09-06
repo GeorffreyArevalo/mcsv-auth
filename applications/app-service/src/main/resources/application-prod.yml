@@ -1,7 +1,7 @@
 
 spring:
   config:
-    import: aws-secretsmanager:crediya/auth
+    import: ${AWS_NAME_SECRET_MANAGER}
   r2dbc:
     url: ${DB_URL}
     username: ${DB_USERNAME}
