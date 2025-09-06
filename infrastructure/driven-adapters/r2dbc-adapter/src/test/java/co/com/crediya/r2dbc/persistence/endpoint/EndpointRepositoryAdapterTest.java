@@ -57,37 +57,5 @@ class EndpointRepositoryAdapterTest {
                 .build();
     }
 
-    @Test
-    @DisplayName("Must find endpoints by role code")
-    void mustFindEndpointsByRoleCode() {
 
-        String roleCode = "ADMIN";
-        when(repository.findByRoleCode(roleCode))
-                .thenReturn(Flux.just(endpointEntityOne, endpointEntityTwo));
-
-        when(mapper.map(endpointEntityOne, Endpoint.class)).thenReturn(endpointOne);
-        when(mapper.map(endpointEntityTwo, Endpoint.class)).thenReturn(endpointTwo);
-
-
-        Flux<Endpoint> result = endpointRepositoryAdapter.findByRoleCode(roleCode);
-
-
-        StepVerifier.create(result)
-                .expectNextMatches(e -> e.getPath().equals(endpointOne.getPath()) && e.getMethod().equals(endpointOne.getMethod()))
-                .expectNextMatches(e -> e.getPath().equals(endpointTwo.getPath()) && e.getMethod().equals(endpointTwo.getMethod()))
-                .verifyComplete();
-    }
-
-    @Test
-    @DisplayName("Must return empty when no endpoints are found for role code")
-    void mustReturnEmptyWhenNoEndpointsFound() {
-
-        String roleCode = "INVALID";
-        when(repository.findByRoleCode(roleCode)).thenReturn(Flux.empty());
-
-        Flux<Endpoint> result = endpointRepositoryAdapter.findByRoleCode(roleCode);
-
-        StepVerifier.create(result)
-                .verifyComplete();
-    }
 }

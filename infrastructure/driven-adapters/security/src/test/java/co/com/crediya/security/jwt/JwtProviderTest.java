@@ -57,7 +57,7 @@ class JwtProviderTest {
         when(keysUtil.loadPrivateKey()).thenReturn(Mono.just(privateKey));
 
 
-        Mono<Token> tokenMono = jwtProvider.generateAccessToken(email, role, List.of());
+        Mono<Token> tokenMono = jwtProvider.generateAccessToken(email, role);
 
         StepVerifier.create(tokenMono)
                 .expectNextMatches(token -> token.getEmail().equals(email))

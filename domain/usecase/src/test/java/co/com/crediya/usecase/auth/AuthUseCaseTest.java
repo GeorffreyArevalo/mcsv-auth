@@ -75,8 +75,7 @@ class AuthUseCaseTest {
 
         when( userRepositoryPort.findByEmail(user.getEmail()) ).thenReturn( Mono.just(user) );
         when( roleRepositoryPort.findById( user.getIdRole() ) ).thenReturn( Mono.just(role) );
-        when( endpointRepositoryPort.findByRoleCode(role.getCode()) ).thenReturn( Flux.empty() );
-        when( tokenProviderPort.generateAccessToken(user.getEmail(), role.getCode(), List.of() ) ).thenReturn(Mono.just(token));
+        when( tokenProviderPort.generateAccessToken(user.getEmail(), role.getCode() ) ).thenReturn(Mono.just(token));
         when( passwordEncoderPort.verify(user.getPassword(), user.getPassword()) ).thenReturn(Boolean.valueOf("true"));
 
         Mono<Token> tokenLogin = authUseCase.login(user.getEmail(), user.getPassword());

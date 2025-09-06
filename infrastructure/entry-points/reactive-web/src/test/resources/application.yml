@@ -4,3 +4,4 @@ routes:
     usersById: "/api/v1/users/{id}"
     usersByDocument: "/api/v1/users/byDocument/{document}"
     authLogin: "/api/v1/login"
+    rolaHasPermission: "/api/v1/auth/roleHasPermission"

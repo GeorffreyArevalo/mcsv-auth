@@ -4,7 +4,6 @@ import co.com.crediya.api.config.PathsConfig;
 import co.com.crediya.api.dtos.user.CreateUserRequestDTO;
 import co.com.crediya.api.dtos.user.UserResponseDTO;
 import co.com.crediya.api.mappers.UserMapper;
-import co.com.crediya.api.util.HandlersResponseUtil;
 import co.com.crediya.api.util.ValidatorUtil;
 import co.com.crediya.exceptions.enums.ExceptionStatusCode;
 import co.com.crediya.model.Role;
