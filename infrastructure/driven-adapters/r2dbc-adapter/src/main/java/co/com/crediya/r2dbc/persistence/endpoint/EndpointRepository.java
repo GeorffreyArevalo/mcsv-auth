@@ -16,7 +16,7 @@ public interface EndpointRepository extends ReactiveCrudRepository<EndpointEntit
                         FROM roles r
                         INNER JOIN role_endpoints re ON r.id = re.id_role
                         INNER JOIN endpoints e ON e.id = re.id_endpoint
-                        WHERE r.code = :roleCode AND e.path = :path AND e.method = :method
+                        WHERE r.code = :roleCode AND :path LIKE REPLACE(e.path, '**', '%') AND e.method = :method
                 )
                 THEN 'true' ELSE 'false' END
         """)
