@@ -36,6 +36,7 @@ public class JwtProvider implements TokenProviderPort {
                         Jwts.builder()
                             .subject(email)
                             .claim(SecurityConstants.ROLE_CLAIM.getValue(), role)
+                            .claim(SecurityConstants.SCOPE_CLAIM.getValue(), role)
                             .issuedAt(new Date())
                             .expiration(new Date(System.currentTimeMillis() + expiration))
                             .signWith( privateKey, Jwts.SIG.RS256 )
