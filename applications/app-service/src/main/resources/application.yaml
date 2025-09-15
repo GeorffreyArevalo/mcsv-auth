@@ -10,6 +10,7 @@ spring:
 management:
   endpoints:
     web:
+      base-path: /auth/actuator
       exposure:
         include: "health,prometheus"
   endpoint:
@@ -27,9 +28,9 @@ routes:
 
 springdoc:
   swagger-ui:
-    path: /openapi/swagger-ui
+    path: /auth/openapi/swagger-ui
   api-docs:
-    path: /openapi/v3/api-docs
+    path: /auth/openapi/v3/api-docs
   packages-to-scan:
     - co.com.crediya
   paths-to-match:

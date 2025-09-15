@@ -39,11 +39,11 @@ public class SecurityConfig {
                     .authorizeExchange( specExchange ->
                         specExchange
                                 .pathMatchers(
-                                        "/openapi/**"
+                                        "/auth/openapi/**"
                                 ).permitAll()
-                                .pathMatchers("/actuator/health").permitAll()
-                                .pathMatchers( HttpMethod.POST, "/api/v1/auth/login").permitAll()
-                                .pathMatchers( HttpMethod.POST, "/api/v1/users").hasAnyRole(Roles.ADVISER.name(), Roles.ADMIN.name())
+                                .pathMatchers("/auth/actuator/health").permitAll()
+                                .pathMatchers( HttpMethod.POST, "/auth/api/v1/auth/login").permitAll()
+                                .pathMatchers( HttpMethod.POST, "/auth/api/v1/users").hasAnyRole(Roles.ADVISER.name(), Roles.ADMIN.name())
                                 .anyExchange().authenticated()
                     )
                     .addFilterAfter(jwtFilter, SecurityWebFiltersOrder.FIRST)

@@ -1,4 +1,6 @@
 server:
+  servlet:
+    context-path: /auth
   port: 8080
 spring:
   r2dbc:
