@@ -23,8 +23,8 @@ public class JwtFilter implements WebFilter {
 
         return Mono.just( exchange.getRequest() )
                 .filter( request ->
-                        !request.getURI().getPath().equals("/api/v1/auth/login")  && !request.getURI().getPath().startsWith("/openapi/")
-                        && !request.getURI().getPath().equals("/actuator/health")
+                        !request.getURI().getPath().equals("/auth/api/v1/auth/login")  && !request.getURI().getPath().startsWith("/auth/openapi/")
+                        && !request.getURI().getPath().equals("/auth/actuator/health")
                 )
                 .switchIfEmpty(chain.filter(exchange).then(Mono.empty()))
                 .filter( request -> Objects.nonNull(request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION)))
