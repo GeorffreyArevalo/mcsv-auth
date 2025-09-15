@@ -41,6 +41,7 @@ public class SecurityConfig {
                                 .pathMatchers(
                                         "/openapi/**"
                                 ).permitAll()
+                                .pathMatchers("/actuator/health").permitAll()
                                 .pathMatchers( HttpMethod.POST, "/api/v1/auth/login").permitAll()
                                 .pathMatchers( HttpMethod.POST, "/api/v1/users").hasAnyRole(Roles.ADVISER.name(), Roles.ADMIN.name())
                                 .anyExchange().authenticated()
