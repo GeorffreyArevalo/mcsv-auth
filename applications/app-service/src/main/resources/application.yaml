@@ -20,11 +20,11 @@ management:
 
 routes:
   paths:
-    users: "/api/v1/users"
-    usersById: "/api/v1/users/{id}"
-    usersByDocument: "/api/v1/users/byDocument/{document}"
-    authLogin: "/api/v1/auth/login"
-    rolaHasPermission: "/api/v1/auth/roleHasPermission"
+    users: "/auth/api/v1/users"
+    usersById: "/auth/api/v1/users/{id}"
+    usersByDocument: "/auth/api/v1/users/byDocument/{document}"
+    authLogin: "/auth/api/v1/auth/login"
+    rolaHasPermission: "/auth/api/v1/auth/roleHasPermission"
 
 springdoc:
   swagger-ui:
